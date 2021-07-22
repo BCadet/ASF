@@ -4,7 +4,7 @@
  *
  * \brief SAM4S WINC3400 configuration.
  *
- * Copyright (c) 2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *

@@ -3,7 +3,7 @@
  *
  * \brief WiFi Provisioning Declarations
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -49,7 +49,7 @@
 
 // states of WiFi provision state machine here
 #define WIFI_PROV_IDLE					0xFF
-#define WIFI_PROV_SUCCESS				0x00	// Should be the same as what is in at_ble_wifiprov_complete_ind
+#define WIFI_PROV_SUCCESS				0x00	// Should be same as what is in at_ble_wifiprov_complete_ind
 
 //status to be returned to application
 #define PROVISION_NULL					0x00
@@ -76,7 +76,7 @@ void ble_prov_stop(void);
 uint8_t ble_prov_get_credentials(credentials *cred);
 //Allows setting of localname in scan response
 //Maximum length is 11 characters
-void ble_prov_init(uint8_t* localname);
+void ble_prov_init(uint8_t* localname, at_ble_auth_t lauthtype);
 void ble_prov_scan_result(tstrM2mWifiscanResult* pstrScanResult, uint8_t resultsRemaining);
 uint8_t ble_prov_get_provision_state(void);
 #define ble_prov_wifi_con_update		wifiprov_wifi_con_update

@@ -3,7 +3,7 @@
  *
  * \brief BLE API definitions
  *
- * Copyright (c) 2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2018-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -44,7 +44,7 @@
 #include "interface.h"
 
 BM_APPLICATION_CMDPKT* application_cmdpkt = NULL;
-
+//#define Older_Firmware_Versions
 extern uart_write_sync_cb_t ble_uart_send_sync;
 extern uart_read_async_cb_t ble_uart_receive_async;
 
@@ -133,6 +133,23 @@ static ble_status_t ble_characteristic_value_read_by_uuid_parser(void *data, uin
 		return cmd_frame->event_msg.data[1];
 	}
 	return BLE_FAILURE;
+}
+
+static ble_status_t ble_gatt_service_read_parser(uint16_t *handle)
+{
+    event_t *cmd_frame = (event_t *) get_received_cmd_frame();
+    
+    if(BM_SERVER_SERVICE_READ == cmd_frame->event_msg.data[0])
+    {
+        if(BLE_SUCCESS == cmd_frame->event_msg.data[1])
+        {
+            *handle = ((uint16_t)cmd_frame->event_msg.data[2]) << 8;
+            *handle |= cmd_frame->event_msg.data[3];
+        }
+        return cmd_frame->event_msg.data[1];
+    }
+    
+    return BLE_FAILURE;
 }
 
 static ble_status_t ble_gatt_service_create_parser(uint16_t *handle)
@@ -1330,6 +1347,167 @@ ble_status_t ble_shutdown(void)
 
 	return status;
 }
+
+
+/*
+ * @brief Read GATT-Service
+ *
+ * @param[in/out] ble_service service. 
+ * 
+ * @return Upon successful completion of the function shall return @ref BLE_SUCCESS, otherwise it shall return @ref ble_status_t
+ *
+ */
+
+ble_status_t ble_gatt_service_read(ble_service_t *ble_service) 
+{
+	
+	uint16_t service_buf_len = 0, char_index, desc_index, handle = 0;
+	ble_status_t status;
+	BM_APPLICATION_ServerReadService(application_cmdpkt, ble_service->uuid.uuid.uuid_128b);
+	status = interface_cmd_send_wait(application_cmdpkt->cmdPkt, (uint32_t) application_cmdpkt->length, COMMAND_COMPLETE);
+	
+		if(BLE_SUCCESS == status)
+		{		
+				#ifdef Older_Firmware_Versions			        	
+					/* Check the status in command complete event */
+					status = ble_gatt_service_read_parser(&handle);
+					/* Assign handles */
+					if(BLE_SUCCESS == status)
+					{
+						#define SERVICE_DISCO_EVENT_BUFFER_LENGTH		127
+						uint8_t event_service_buf[SERVICE_DISCO_EVENT_BUFFER_LENGTH];
+						event_t event_service = {.event_msg.data = event_service_buf, .event_msg.data_len = 0, .event_id = 0};
+						bool got_CHAR_DISC_event = false, got_CCCD_DISC_event = false;
+						handle = 0;
+						uint8_t record_len =  0;
+						uint8_t* record_ptr = NULL;
+						uint8_t property = 0;
+						uint8_t service_characteristic_resp =0;
+						uint8_t characteristic_descriptors_resp=0;
+			
+						status = BLE_EVENT_Q_EMPTY;
+						do{		
+							memset(event_service_buf, 0x00, sizeof(event_service_buf));
+							status = ble_event_get(&event_service);		
+							if( event_service.event_id == BM_CLIENT_DISCOVER_CHARACTERISTICS_RESULT )
+							{
+								got_CHAR_DISC_event = true;
+								ble_service->handle = event_service.event_msg.data[0];
+								record_len = event_service.event_msg.data[1];
+								record_ptr = &(event_service.event_msg.data[2]);
+								for(uint8_t i=0; i<ble_service->char_count; i++)
+								{
+									record_ptr += i*record_len;
+									handle = record_ptr[0]|(record_ptr[1]<<8);
+									ble_service->char_list[i].char_val.char_handle = handle;
+									property = record_ptr[2];
+									ble_service->char_list[i].char_val.properties = property;
+									handle = record_ptr[3]|(record_ptr[4]<<8);
+									ble_service->char_list[i].char_val.value_handle = handle;
+									if( (record_len - sizeof(handle) - sizeof(property) - sizeof(handle)) == 16)
+									{
+										memcpy(ble_service->char_list[i].char_val.uuid.uuid.uuid_128b, &record_ptr[5], 16);
+										memcpy_inplace_reorder(ble_service->char_list[i].char_val.uuid.uuid.uuid_128b, BLE_UUID_128B_LEN);
+									}
+									else
+									{
+										memcpy(ble_service->char_list[i].char_val.uuid.uuid.uuid_16b, &record_ptr[5], 2);
+										memcpy_inplace_reorder(ble_service->char_list[i].char_val.uuid.uuid.uuid_16b, BLE_UUID_16B_LEN);
+									}
+								}
+							}
+							else if( event_service.event_id == BM_CLIENT_DISCOVER_CHARACTERISTICS_DESCRIPTORS_RESULT )
+							{
+								got_CCCD_DISC_event = true;
+								record_len = 2/*handle len*/ + (event_service.event_msg.data[1] == 1? 2:16);
+								record_ptr = &(event_service.event_msg.data[2]);
+								for(uint8_t i=0; i<ble_service->char_count; i++)
+								{
+									record_ptr += i*record_len;
+									handle = record_ptr[0]|(record_ptr[1]<<8);
+									if( (record_ptr[2]|(record_ptr[3]<<8)) == 0x2902)
+									{
+										ble_service->char_list[i].client_config_desc.handle = handle;
+									}
+								}	
+							}
+				
+						}while(!(got_CHAR_DISC_event&got_CCCD_DISC_event) && (status != BLE_EVENT_Q_EMPTY) );
+
+					}			
+				#else        
+					/* Check the status in command complete event */
+					status = ble_gatt_service_read_parser(&handle);
+					/* Assign handles */
+					if(BLE_SUCCESS == status)
+					{
+							#define SERVICE_DISCO_EVENT_BUFFER_LENGTH		127
+							uint8_t event_service_buf[SERVICE_DISCO_EVENT_BUFFER_LENGTH];
+							event_t event_service = {.event_msg.data = event_service_buf, .event_msg.data_len = 0, .event_id = 0};
+							bool got_CHAR_DISC_event = false, got_CCCD_DISC_event = false;
+							handle = 0;
+							uint8_t record_len =  0;
+							uint8_t* record_ptr = NULL;
+							uint8_t property = 0;
+							uint8_t service_characteristic_resp =0;
+							uint8_t characteristic_descriptors_resp=0;
+	           
+							status = BLE_EVENT_Q_EMPTY;
+							do{
+		           
+								memset(event_service_buf, 0x00, sizeof(event_service_buf));
+								status = ble_event_get(&event_service);
+				
+								if( event_service.event_id == BM_CLIENT_DISCOVER_CHARACTERISTICS_RESULT ){
+										
+									ble_service->handle = event_service.event_msg.data[0];
+									record_len = event_service.event_msg.data[1];
+									record_ptr = &(event_service.event_msg.data[2]);	
+									handle = record_ptr[0]|(record_ptr[1]<<8);
+									ble_service->char_list[service_characteristic_resp].char_val.char_handle = handle;					
+									property = record_ptr[2];
+									ble_service->char_list[service_characteristic_resp].char_val.properties = property;
+									handle = record_ptr[3]|(record_ptr[4]<<8);
+									ble_service->char_list[service_characteristic_resp].char_val.value_handle = handle;
+									if( (record_len - sizeof(handle) - sizeof(property) - sizeof(handle)) == 16){
+										memcpy(ble_service->char_list[service_characteristic_resp].char_val.uuid.uuid.uuid_128b, &record_ptr[5], 16);
+										memcpy_inplace_reorder(ble_service->char_list[service_characteristic_resp].char_val.uuid.uuid.uuid_128b, BLE_UUID_128B_LEN);
+									}
+									else
+									{
+										memcpy(ble_service->char_list[service_characteristic_resp].char_val.uuid.uuid.uuid_16b, &record_ptr[5], 2);
+										memcpy_inplace_reorder(ble_service->char_list[service_characteristic_resp].char_val.uuid.uuid.uuid_16b, BLE_UUID_16B_LEN);
+									}
+									service_characteristic_resp++;
+									if(service_characteristic_resp==2)
+									{
+										got_CHAR_DISC_event = true;
+									}
+				
+								}
+								else if( event_service.event_id == BM_CLIENT_DISCOVER_CHARACTERISTICS_DESCRIPTORS_RESULT ){
+									record_ptr = &(event_service.event_msg.data[2]);						
+									handle = record_ptr[0]|(record_ptr[1]<<8);
+									if( (record_ptr[2]|(record_ptr[3]<<8)) == 0x2902){
+										ble_service->char_list[characteristic_descriptors_resp].client_config_desc.handle = handle;
+									}
+									characteristic_descriptors_resp++;		
+									if(characteristic_descriptors_resp==2)
+									{
+										got_CCCD_DISC_event = true;
+									}
+								}		
+							}while(!(got_CHAR_DISC_event&got_CCCD_DISC_event) && (status != BLE_EVENT_Q_EMPTY) );
+					}
+				#endif 
+	    }
+	return status;
+}
+
+
+
+
+
 
 /*
  * @brief Create GATT-Service

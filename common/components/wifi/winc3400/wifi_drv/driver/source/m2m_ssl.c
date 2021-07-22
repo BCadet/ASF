@@ -4,7 +4,7 @@
  *
  * \brief WINC SSL Interface.
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -272,104 +272,195 @@ NMI_API sint8 m2m_ssl_send_certs_to_winc(uint8 *pu8Buffer, uint32 u32BufferSz)
 }
 
 /*!
-@fn         NMI_API sint8 m2m_ssl_retrieve_cert(uint16* pu16CurveType, uint8* pu8Hash, uint8* pu8Sig, tstrECPoint* pu8Key)
-@brief      Retrieve the certificate to be verified from the WINC
-@param[in]  pu16CurveType
-                Pointer to the certificate curve type.
-@param[in]  pu8Hash
-                Pointer to the certificate hash.
-@param[in]  pu8Sig
-                Pointer to the certificate signature.
-@param[in]  pu8Key
-                Pointer to the certificate Key.
+@fn         NMI_API sint8 m2m_ssl_retrieve_next_for_verifying(tenuEcNamedCurve *penuCurve, uint8 *pu8Value, uint16 *pu16ValueSz, uint8 *pu8Sig, uint16 *pu16SigSz, tstrECPoint *pstrKey);
+@brief      Retrieve the next set of information from the WINC for ECDSA verification.
+@param[out] penuCurve
+                The named curve.
+@param[out] pu8Value
+                Value retrieved for verification. This is the digest of the message, truncated/prepended to the appropriate size.
+@param[inout] pu16ValueSz
+                in: Size of value buffer provided by caller.
+                out: Size of value retrieved (provided for convenience; the value size is in fact determined by the curve).
+@param[out] pu8Sig
+                Signature retrieved for verification.
+@param[inout] pu16SigSz
+                in: Size of signature buffer provided by caller.
+                out: Size of signature retrieved (provided for convenience; the signature size is in fact determined by the curve).
+@param[out] pstrKey
+                Public key retrieved for verification.
 @return     The function returns @ref M2M_SUCCESS for success and a negative value otherwise.
+
+@pre        This function should only be called after the application has been notified that
+            verification information is ready via @ref ECC_REQ_SIGN_VERIFY.
+
+@warning    If this function returns @ref M2M_ERR_FAIL, then any remaining verification info from
+            the WINC is lost.
 */
-NMI_API sint8 m2m_ssl_retrieve_cert(uint16 *pu16CurveType, uint8 *pu8Hash, uint8 *pu8Sig, tstrECPoint *pu8Key)
+NMI_API sint8 m2m_ssl_retrieve_next_for_verifying(tenuEcNamedCurve *penuCurve, uint8 *pu8Value, uint16 *pu16ValueSz, uint8 *pu8Sig, uint16 *pu16SigSz, tstrECPoint *pstrKey)
 {
-    uint8   bSetRxDone  = 1;
+    sint8   s8Ret = M2M_ERR_FAIL;
     uint16  u16HashSz, u16SigSz, u16KeySz;
-    sint8   s8Ret = M2M_SUCCESS;
 
     if(gu32HIFAddr == 0) return M2M_ERR_FAIL;
 
-    if(hif_receive(gu32HIFAddr, (uint8 *)pu16CurveType, 2, 0) != M2M_SUCCESS) goto __ERR;
+    if((NULL == penuCurve) || (NULL == pu8Value) || (NULL == pu16ValueSz) || (NULL == pu8Sig) || (NULL == pu16SigSz) || (NULL == pstrKey))
+    {
+        s8Ret = M2M_ERR_INVALID_ARG;
+        goto __ERR;
+    }
+
+    if(hif_receive(gu32HIFAddr, (uint8 *)&u16KeySz, 2, 0) != M2M_SUCCESS) goto __ERR;
+    *penuCurve = _htons(u16KeySz);
     gu32HIFAddr += 2;
 
     if(hif_receive(gu32HIFAddr, (uint8 *)&u16KeySz, 2, 0) != M2M_SUCCESS) goto __ERR;
+    u16KeySz = _htons(u16KeySz);
+    if(u16KeySz > sizeof(pstrKey->X)) goto __ERR;
+    pstrKey->u16Size = u16KeySz;
     gu32HIFAddr += 2;
 
     if(hif_receive(gu32HIFAddr, (uint8 *)&u16HashSz, 2, 0) != M2M_SUCCESS) goto __ERR;
+    u16HashSz = _htons(u16HashSz);
+    if(u16HashSz > *pu16ValueSz) goto __ERR;
+    *pu16ValueSz = u16HashSz;
     gu32HIFAddr += 2;
 
     if(hif_receive(gu32HIFAddr, (uint8 *)&u16SigSz, 2, 0) != M2M_SUCCESS) goto __ERR;
+    u16SigSz = _htons(u16SigSz);
+    if(u16SigSz > *pu16SigSz) goto __ERR;
+    *pu16SigSz = u16SigSz;
     gu32HIFAddr += 2;
 
-    (*pu16CurveType)= _htons((*pu16CurveType));
-    pu8Key->u16Size = _htons(u16KeySz);
-    u16HashSz       = _htons(u16HashSz);
-    u16SigSz        = _htons(u16SigSz);
+    if(hif_receive(gu32HIFAddr, pstrKey->X, u16KeySz, 0) != M2M_SUCCESS) goto __ERR;
+    gu32HIFAddr += u16KeySz;
+    if(hif_receive(gu32HIFAddr, pstrKey->Y, u16KeySz, 0) != M2M_SUCCESS) goto __ERR;
+    gu32HIFAddr += u16KeySz;
 
-    if(hif_receive(gu32HIFAddr, pu8Key->X, pu8Key->u16Size * 2, 0) != M2M_SUCCESS) goto __ERR;
-    gu32HIFAddr += (pu8Key->u16Size * 2);
-
-    if(hif_receive(gu32HIFAddr, pu8Hash, u16HashSz, 0) != M2M_SUCCESS) goto __ERR;
+    if(hif_receive(gu32HIFAddr, pu8Value, u16HashSz, 0) != M2M_SUCCESS) goto __ERR;
     gu32HIFAddr += u16HashSz;
 
     if(hif_receive(gu32HIFAddr, pu8Sig, u16SigSz, 0) != M2M_SUCCESS) goto __ERR;
     gu32HIFAddr += u16SigSz;
 
-    bSetRxDone = 0;
+    return M2M_SUCCESS;
 
 __ERR:
-    if(bSetRxDone)
-    {
-        s8Ret = M2M_ERR_FAIL;
-        hif_receive(0, NULL, 0, 1);
-    }
+    hif_receive(0, NULL, 0, 1);
     return s8Ret;
 }
 
 /*!
-@fn         NMI_API sint8 m2m_ssl_retrieve_hash(uint8* pu8Hash, uint16 u16HashSz)
-@brief      Retrieve the certificate hash.
-@param[in]  pu8Hash
-                Pointer to the certificate hash.
-@param[in]  u16HashSz
-                Hash size.
+@fn         NMI_API sint8 m2m_ssl_retrieve_cert(uint16* pu16Curve, uint8* pu8Value, uint8* pu8Sig, tstrECPoint* pstrKey);
+@brief      Retrieve the next set of information from the WINC for ECDSA verification.
+@param[out] pu16Curve
+                The named curve, to be cast to type @ref tenuEcNamedCurve.
+@param[out] pu8Value
+                Value retrieved for verification. This is the digest of the message, truncated/prepended to the appropriate size.
+                The size of the value is equal to the field size of the curve, hence is determined by pu16Curve.
+@param[out] pu8Sig
+                Signature retrieved for verification.
+                The size of the signature is equal to twice the field size of the curve, hence is determined by pu16Curve.
+@param[out] pstrKey
+                Public key retrieved for verification.
 @return     The function returns @ref M2M_SUCCESS for success and a negative value otherwise.
+
+@pre        This function should only be called after the application has been notified that
+            verification information is ready via @ref ECC_REQ_SIGN_VERIFY.
+
+@warning    If this function returns @ref M2M_ERR_FAIL, then any remaining verification info from
+            the WINC is lost.
+
+@warning    This API has been deprecated and is kept for legacy purposes only. It is recommended
+            that @ref m2m_ssl_retrieve_next_for_verifying is used instead.
 */
-NMI_API sint8 m2m_ssl_retrieve_hash(uint8 *pu8Hash, uint16 u16HashSz)
+NMI_API sint8 m2m_ssl_retrieve_cert(uint16 *pu16Curve, uint8 *pu8Value, uint8 *pu8Sig, tstrECPoint *pstrKey)
 {
-    uint8   bSetRxDone  = 1;
-    sint8   s8Ret = M2M_SUCCESS;
+    uint16  u16ValueSz = 32, u16SigSz = 64;
+
+    return m2m_ssl_retrieve_next_for_verifying((tenuEcNamedCurve *)pu16Curve, pu8Value, &u16ValueSz, pu8Sig, &u16SigSz, pstrKey);
+}
+
+/*!
+@fn         NMI_API sint8 m2m_ssl_retrieve_hash(uint8* pu8Value, uint16 u16ValueSz)
+@brief      Retrieve the value from the WINC for ECDSA signing.
+@param[out] pu8Value
+                Value retrieved for signing. This is the digest of the message, truncated/prepended to the appropriate size.
+@param[in]  u16ValueSz
+                Size of value to be retrieved. (The application should obtain this information,
+                along with the curve, from the associated @ref ECC_REQ_SIGN_GEN notification.)
+@return     The function returns @ref M2M_SUCCESS for success and a negative value otherwise.
+
+@pre        This function should only be called after the application has been notified that
+            signing information is ready via @ref ECC_REQ_SIGN_GEN.
+
+@warning    If this function returns @ref M2M_ERR_FAIL, then the value for signing is lost.
+*/
+NMI_API sint8 m2m_ssl_retrieve_hash(uint8 *pu8Value, uint16 u16ValueSz)
+{
+    sint8   s8Ret = M2M_ERR_FAIL;
 
     if(gu32HIFAddr == 0) return M2M_ERR_FAIL;
 
-    if(hif_receive(gu32HIFAddr, pu8Hash, u16HashSz, 0) != M2M_SUCCESS) goto __ERR;
+    if(NULL == pu8Value)
+    {
+        s8Ret = M2M_ERR_INVALID_ARG;
+        goto __ERR;
+    }
 
-    bSetRxDone = 0;
+    if(hif_receive(gu32HIFAddr, pu8Value, u16ValueSz, 0) != M2M_SUCCESS) goto __ERR;
+
+    return M2M_SUCCESS;
 
 __ERR:
-    if(bSetRxDone)
-    {
-        s8Ret = M2M_ERR_FAIL;
-        hif_receive(0, NULL, 0, 1);
-    }
+    hif_receive(0, NULL, 0, 1);
     return s8Ret;
 }
 
 /*!
-@fn         NMI_API void m2m_ssl_stop_processing_certs(void)
-@brief      Stops receiving from the HIF.
+@fn         NMI_API void m2m_ssl_stop_retrieving(void);
+@brief      Allow SSL driver to tidy up when the application chooses not to retrieve all available
+            information.
+
+@return     None.
+
+@warning    The application must call this function if it has been notified (via
+            @ref ECC_REQ_SIGN_GEN or @ref ECC_REQ_SIGN_VERIFY) that information is available for
+            retrieving from the WINC, but chooses not to retrieve it all.
+            The application must not call this function if it has retrieved all the available
+            information, or if a retrieve function returned @ref M2M_ERR_FAIL indicating that any
+            remaining information has been lost.
+
+@see        m2m_ssl_retrieve_next_for_verifying\n
+            m2m_ssl_retrieve_cert\n
+            m2m_ssl_retrieve_hash
 */
-NMI_API void m2m_ssl_stop_processing_certs(void)
+NMI_API void m2m_ssl_stop_retrieving(void)
 {
     hif_receive(0, NULL, 0, 1);
 }
 
 /*!
-@fn         NMI_API void m2m_ssl_ecc_process_done(void)
-@brief      Stops receiving from the HIF.
+@fn         NMI_API void m2m_ssl_stop_processing_certs(void);
+@brief      Allow SSL driver to tidy up in case application does not read all available certificates.
+@return     None.
+
+@warning    This API has been deprecated and is kept for legacy purposes only. It is recommended
+            that @ref m2m_ssl_stop_retrieving is used instead.
+*/
+NMI_API void m2m_ssl_stop_processing_certs(void)
+{
+    m2m_ssl_stop_retrieving();
+}
+
+/*!
+@fn         NMI_API void m2m_ssl_ecc_process_done(void);
+@brief      Allow SSL driver to tidy up after application has finished processing ECC message.
+
+@return     None.
+
+@warning    The application should call this function after receiving an SSL callback with message
+            type @ref M2M_SSL_REQ_ECC, after retrieving any related information, and before
+            calling @ref m2m_ssl_handshake_rsp.
 */
 NMI_API void m2m_ssl_ecc_process_done(void)
 {

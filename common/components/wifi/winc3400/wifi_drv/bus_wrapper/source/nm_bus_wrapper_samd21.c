@@ -4,7 +4,7 @@
  *
  * \brief This module contains WINC3400 bus wrapper APIs implementation.
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -40,6 +40,11 @@
 #include "port.h"
 #include "conf_winc.h"
 #include <asf.h>
+
+#ifdef CONF_WINC_SPI_DMA
+#include "dma.h"
+#include "samd21_xplained_pro.h"
+#endif
 
 #define NM_BUS_MAX_TRX_SZ	256
 
@@ -294,7 +299,7 @@ sint8 nm_bus_init(uint8 *pvinit, uint32 req_serial_number)
 		spi_dma_rx_done = false;
 		dma_get_config_defaults(&dma_config);
 		dma_config.peripheral_trigger = CONF_WINC_SPI_DMA_PERIPHERAL_TRIGGER_RX;
-		dma_config.trigger_action = DMA_TRIGGER_ACTON_BEAT;
+		dma_config.trigger_action = DMA_TRIGGER_ACTION_BEAT;
 		dma_allocate(&dma_res_rx, &dma_config);
 		dma_add_descriptor(&dma_res_rx, &dma_dsc_rx);
 		dma_register_callback(&dma_res_rx, spi_dma_rx_completion_callback, DMA_CALLBACK_TRANSFER_DONE);
@@ -302,7 +307,7 @@ sint8 nm_bus_init(uint8 *pvinit, uint32 req_serial_number)
 
 		dma_get_config_defaults(&dma_config);
 		dma_config.peripheral_trigger = CONF_WINC_SPI_DMA_PERIPHERAL_TRIGGER_TX;
-		dma_config.trigger_action = DMA_TRIGGER_ACTON_BEAT;
+		dma_config.trigger_action = DMA_TRIGGER_ACTION_BEAT;
 		dma_allocate(&dma_res_tx, &dma_config);
 		dma_add_descriptor(&dma_res_tx, &dma_dsc_tx);
 		dma_register_callback(&dma_res_tx, spi_dma_tx_completion_callback, DMA_CALLBACK_TRANSFER_DONE);

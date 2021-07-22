@@ -3,7 +3,7 @@
  *
  * \brief GAP-Peripheral application
  *
- * Copyright (c) 2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2018-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -322,11 +322,11 @@ int main(void)
 	
 	/* Initialize accelerometer and gyroscope sensor service */
 	ble_service = acc_gyro_sensor_service_init(&acc_sensor_value, &gyro_sensor_value);
-	/* Create GATT service for accelerometer and gyro */
-	status = ble_gatt_service_create(ble_service);
+	/* Read GATT service for accelerometer and gyro */
+	status = ble_gatt_service_read(ble_service);
 	if(BLE_SUCCESS != status)
 	{
-		DBG_LOG("GATT-Service creation fails = 0x%02X", status);
+		DBG_LOG("GATT-Service read fails = 0x%02X", status);
 	}
 	
 	/* Start advertisement */

@@ -3,7 +3,7 @@
  *
  * \brief BNO055 interface config for SAM L21
  *
- * Copyright (c) 2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2020-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -45,7 +45,7 @@
 #define BNO055_PIN_SLAVE_ADDR_SELECT  EXT2_PIN_5
 
 /* Reset */
-#define BNO055_PIN_RESET              EXT2_PIN_5
+#define BNO055_PIN_RESET              EXT2_PIN_15
 #define BNO055_PIN_INT                EXT2_PIN_9
 
 /* Sleep State Macros */

@@ -1,11 +1,11 @@
 '''
-Simple program to get a hint where simple programs might be installed by chasing thru registry,
+Simple program to get a hint where simple programs might be installed by chasing thru registry, 
 does not deal with things like word which are beyonf complicated.
 
 Pass in extention to check and a hint at what program you want.
 
 Returns 0 if found.
-2 for parm error
+2 for parm error 
 1 for not found
 
 
@@ -39,7 +39,7 @@ def join(path, *paths):
     result = os.path.join(path, *paths)
     result = result.replace('/', '\\')
     return result
-
+    
 def parse_key(key):
     key = key.upper()
     aparts = key.split('\\')
@@ -59,7 +59,7 @@ def get_all_values(key):
     data[0] = [[''],['']]
     try:
         partial_key, root_hive = parse_key(key)
-
+        
         with _winreg.ConnectRegistry(None, root_hive) as reg:
             with _winreg.OpenKey(reg, partial_key) as key_object:
                 i = 0
@@ -82,7 +82,7 @@ def get_all_values(key):
                 key_object.Close()
     except:
         pass
-
+        
     return data
 
 def main(argv=None):
@@ -91,7 +91,7 @@ def main(argv=None):
     if len(argv) < 3:
         print "Need 2 parameters; one file ext without . and part of program name beging sought eg  atsln studio"
         sys.exit(2)
-
+        
     args = argv[1:]
     key = r'HKEY_CLASSES_ROOT\.' + args[0] + '\\OpenWithProgids'
     pkey = r''
@@ -102,11 +102,11 @@ def main(argv=None):
         if args[1].upper() in strdatax.upper():
             pkey = r'HKEY_CLASSES_ROOT\\' + strdatax + '\\shell\\open\\command'
             break
-
+    
     if str(data[0][1]) == '[\'\']':
         print "Assoc not found"
         sys.exit(1)
-
+        
     data = get_all_values(pkey)
     for x in range(0, len(data)):
         if ".EXE" in str(data[x][1]).upper():
@@ -116,9 +116,9 @@ def main(argv=None):
 
     print "Handler not found"
     sys.exit(1)
-
-
+            
+                        
 if __name__ == "__main__":
     main()
 
-
+    

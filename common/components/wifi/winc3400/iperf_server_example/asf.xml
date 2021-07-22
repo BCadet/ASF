@@ -20,6 +20,7 @@
 			<require idref="sam0.utils"/>
 			<require idref="sam0.utils.stdio"/>
 			<require idref="sam0.utils.stdio.stdio_serial"/>
+			<require idref="sam0.drivers.dma"/>
 			<info type="gui-flag" value="move-to-root"/>
 		</module>
 		<module type="application" id="common.components.wifi.winc3400.iperf_server_example#1" caption="WINC 3400 Iperf Example">

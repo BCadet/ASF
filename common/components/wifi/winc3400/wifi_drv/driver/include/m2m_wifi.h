@@ -4,7 +4,7 @@
  *
  * \brief WINC3400 IoT Application Interface.
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -2425,6 +2425,35 @@ NMI_API sint8 m2m_wifi_set_scan_options(tstrM2MScanOption *ptstrM2MScanOption);
 /*!
 @ingroup WLANSCAN
 @fn \
+    sint8 m2m_wifi_set_stop_scan_on_first(uint8 u8StopScanOption);
+
+@brief
+    Synchronous API for enabling/disabling the stop scan on first result of the WINC IC's network scanning functions.
+
+@details
+    Allows for enabling/disabling of stop scan on first result. When enabled, the WINC will stop the scan as soon as
+    it detects a network and return the results to the host. Setting is persistent and will need to be explicitly
+    reverted back by the application if it no longer wishes for it to be enabled.
+
+@param[in]  u8StopScanOption;
+    Setting for enabling or disabling Stopping Scan on first result.
+    1 = Enabled, 0 = Disabled (Default)
+
+@return
+    The function returns @ref M2M_SUCCESS if the command has been successfully queued to the WINC and a negative value otherwise.
+
+@see
+    tenuM2mScanCh
+    tstrM2MScanOption
+    tstrM2MStopScanOption
+    m2m_wifi_request_scan
+    m2m_wifi_set_scan_options
+*/
+NMI_API sint8 m2m_wifi_set_stop_scan_on_first(uint8 u8StopScanOption);
+
+/*!
+@ingroup WLANSCAN
+@fn \
     sint8 m2m_wifi_set_scan_region(uint16 ScanRegion);
 
 @brief
@@ -2618,6 +2647,165 @@ NMI_API sint8 m2m_wifi_request_scan(uint8 ch);
     The function returns @ref M2M_SUCCESS for successful operations and a negative value otherwise.
 */
 NMI_API sint8 m2m_wifi_request_scan_passive(uint8 ch);
+
+/*!
+@ingroup WLANSCAN
+@fn \
+    NMI_API sint8 m2m_wifi_request_scan_ssid_list(uint8 ch,uint8 * u8SsidList);
+
+@brief
+    Asynchronous wi-fi scan request on the given channel and the hidden scan list.
+
+@details
+    The scan status is delivered in the wi-fi event callback and then the application
+    is to read the scan results sequentially.
+    The number of  APs found (N) is returned in event @ref M2M_WIFI_RESP_SCAN_DONE with the number of found
+    APs.
+    The application could read the list of APs by calling the function @ref m2m_wifi_req_scan_result N times.
+
+@param[in]  ch
+    RF Channel ID for SCAN operation. It should be set according to @ref tenuM2mScanCh.
+    With a value of @ref M2M_WIFI_CH_ALL, means to scan all channels.
+
+@param[in]  u8SsidList
+    u8SsidList is a buffer containing a list of hidden SSIDs to
+    include during the scan. The first byte in the buffer, u8SsidList[0],
+    is the number of SSIDs encoded in the string. The number of hidden SSIDs
+    cannot exceed @ref MAX_HIDDEN_SITES. All SSIDs are concatenated in the following
+    bytes and each SSID is prefixed with a one-byte header containing its length.
+    The total number of bytes in u8SsidList buffer, including length byte, cannot
+    exceed 133 bytes (MAX_HIDDEN_SITES SSIDs x 32 bytes each, which is max SSID length).
+    For instance, encoding the two hidden SSIDs "DEMO_AP" and "TEST"
+    results in the following buffer content:
+
+@code
+    uint8 u8SsidList[14];
+    u8SsidList[0] = 2; // Number of SSIDs is 2
+    u8SsidList[1] = 7; // Length of the string "DEMO_AP" without NULL termination
+    memcpy(&u8SsidList[2], "DEMO_AP", 7);  // Bytes index 2-9 containing the string DEMO_AP
+    u8SsidList[9] = 4; // Length of the string "TEST" without NULL termination
+    memcpy(&u8SsidList[10], "TEST", 4);  // Bytes index 10-13 containing the string TEST
+@endcode
+
+@note
+    It works with STA/AP mode (connected or disconnected).
+
+@pre
+    - A Wi-Fi notification callback of type @ref tpfAppWifiCb MUST be implemented and registered at initialization. Registering the callback
+      is done through passing it to the @ref m2m_wifi_init.
+    - The events @ref M2M_WIFI_RESP_SCAN_DONE and @ref M2M_WIFI_RESP_SCAN_RESULT.
+      must be handled in the callback.
+    - The @ref m2m_wifi_handle_events function MUST be called to receive the responses in the callback.
+
+@see
+    M2M_WIFI_RESP_SCAN_DONE
+    M2M_WIFI_RESP_SCAN_RESULT
+    tpfAppWifiCb
+    tstrM2mWifiscanResult
+    tenuM2mScanCh
+    m2m_wifi_init
+    m2m_wifi_handle_events
+    m2m_wifi_req_scan_result
+
+@return
+    The function returns @ref M2M_SUCCESS for successful operations and a negative value otherwise.
+
+\section WIFIExample6b Example
+  The code snippet demonstrates an example of how the scan request is called from the application's main function and the handling of
+  the events received in response.
+@code
+#include "m2m_wifi.h"
+#include "m2m_types.h"
+
+static void request_scan_hidden_demo_ap(void);
+
+void wifi_event_cb(uint8 u8WiFiEvent, void * pvMsg)
+{
+    static uint8    u8ScanResultIdx = 0;
+
+    switch(u8WiFiEvent)
+    {
+    case M2M_WIFI_RESP_SCAN_DONE:
+        {
+            tstrM2mScanDone *pstrInfo = (tstrM2mScanDone*)pvMsg;
+
+            printf("Num of AP found %d\n",pstrInfo->u8NumofCh);
+            if(pstrInfo->s8ScanState == M2M_SUCCESS)
+            {
+                u8ScanResultIdx = 0;
+                if(pstrInfo->u8NumofCh >= 1)
+                {
+                    m2m_wifi_req_scan_result(u8ScanResultIdx);
+                    u8ScanResultIdx ++;
+                }
+                else
+                {
+                    printf("No AP Found Rescan\n");
+                    request_scan_hidden_demo_ap();
+                }
+            }
+            else
+            {
+                printf("(ERR) Scan fail with error <%d>\n",pstrInfo->s8ScanState);
+            }
+        }
+        break;
+    case M2M_WIFI_RESP_SCAN_RESULT:
+        {
+            tstrM2mWifiscanResult       *pstrScanResult =(tstrM2mWifiscanResult*)pvMsg;
+            uint8                       u8NumFoundAPs = m2m_wifi_get_num_ap_found();
+
+            printf(">>%02d RI %d SEC %s CH %02d BSSID %02X:%02X:%02X:%02X:%02X:%02X SSID %s\n",
+                pstrScanResult->u8index,pstrScanResult->s8rssi,
+                pstrScanResult->u8AuthType,
+                pstrScanResult->u8ch,
+                pstrScanResult->au8BSSID[0], pstrScanResult->au8BSSID[1], pstrScanResult->au8BSSID[2],
+                pstrScanResult->au8BSSID[3], pstrScanResult->au8BSSID[4], pstrScanResult->au8BSSID[5],
+                pstrScanResult->au8SSID);
+
+            if(u8ScanResultIdx < u8NumFoundAPs)
+            {
+                // Read the next scan result
+                m2m_wifi_req_scan_result(index);
+                u8ScanResultIdx ++;
+            }
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+static void request_scan_hidden_demo_ap(void)
+{
+    uint8 list[9];
+    char ssid[] = "DEMO_AP";
+    uint8 len = (uint8)(sizeof(ssid)-1);
+
+    list[0] = 1;
+    list[1] = len;
+    memcpy(&list[2], ssid, len); // copy 7 bytes
+    // Scan all channels
+    m2m_wifi_request_scan_ssid_list(M2M_WIFI_CH_ALL, list);
+}
+
+int main()
+{
+    tstrWifiInitParam   param;
+
+    param.pfAppWifiCb   = wifi_event_cb;
+    if(!m2m_wifi_init(&param))
+    {
+        request_scan_hidden_demo_ap();
+        while(1)
+        {
+            m2m_wifi_handle_events(NULL);
+        }
+    }
+}
+@endcode
+*/
+NMI_API sint8 m2m_wifi_request_scan_ssid_list(uint8 ch, uint8 *u8Ssidlist);
 
 /*!
 @ingroup WLANSCAN
@@ -3623,7 +3811,8 @@ NMI_API sint8 m2m_wifi_set_cust_InfoElement(uint8 *pau8M2mCustInfoElement);
     Change the power profile mode.
 
 @param[in]  u8PwrMode
-    Change the WINC power profile to different mode based on the enumeration @ref tenuM2mPwrMode.
+    Change the WINC power profile to different mode based on the enumeration @ref tenuM2mPwrMode.\n
+    Not implemented in WINC3400 firmware.
 
 @warning
     May only be called after initialization, before any connection request, and may not be used to change
@@ -3693,22 +3882,20 @@ NMI_API sint8 m2m_wifi_enable_firmware_logs(uint8 u8Enable);
     sint8 m2m_wifi_set_battery_voltage(uint16 u16BattVoltx100);
 
 @brief
-    Set the battery voltage to update the firmware calculations.
+    Set the battery voltage to update the firmware calculations.\n
+    Not implemented in WINC3400 firmware.
 
 @pre
     Must be called after initialization through the following function @ref m2m_wifi_init.
 
-@param[in]  u16BattVoltx100
-    Battery voltage as double (multiplied by 100).
+@param [in] u16BattVoltx100
+    Battery voltage multiplied by 100
 
 @return
     The function returns @ref M2M_SUCCESS for success and a negative value otherwise.
 
 @see
     m2m_wifi_init
-
-@warning
-    This is not supported in the current release.
 */
 sint8 m2m_wifi_set_battery_voltage(uint16 u16BattVoltx100);
 

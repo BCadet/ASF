@@ -4,7 +4,7 @@
  *
  * \brief WINC3400 IoT OTA Interface.
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -135,9 +135,7 @@ NMI_API sint8  m2m_ota_notif_set_url(uint8 *u8Url)
 {
     sint8 ret = M2M_SUCCESS;
     uint16 u16UrlSize = m2m_strlen(u8Url) + 1;
-    /*Todo: we may change it to data pkt but we need to give it higher priority
-            but the priority is not implemented yet in data pkt
-    */
+
     ret = hif_send(M2M_REQ_GROUP_OTA, M2M_OTA_REQ_NOTIF_SET_URL, u8Url, u16UrlSize, NULL, 0, 0);
     return ret;
 }
@@ -179,9 +177,7 @@ NMI_API sint8 m2m_ota_start_update(unsigned char *pcDownloadUrl)
 {
     sint8 ret = M2M_SUCCESS;
     uint16 u16DurlSize = m2m_strlen(pcDownloadUrl) + 1;
-    /*Todo: we may change it to data pkt but we need to give it higher priority
-            but the priority is not implemented yet in data pkt
-    */
+
     ret = hif_send(M2M_REQ_GROUP_OTA, M2M_OTA_REQ_START_UPDATE, pcDownloadUrl, u16DurlSize, NULL, 0, 0);
     return ret;
 }

@@ -4,7 +4,7 @@
  *
  * \brief BSD compatible socket interface internal types.
  *
- * Copyright (c) 2017-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -63,7 +63,7 @@ MACROS
 
 #define ALPN_LIST_MIN_SIZE			4
 #define ALPN_LIST_MAX_SIZE			32
-/*!<
+/*!< 
 	Maximum length of ALPN list that can be specified by the application.
 	The list is in the following format:
 	@verbatim
@@ -76,7 +76,7 @@ MACROS
 */
 
 #define SOCKET_CMD_INVALID					0x00
-/*!<
+/*!< 
     Invalid Socket command value.
 */
 
@@ -182,11 +182,17 @@ MACROS
 #define SOCKET_CMD_PING						0x52
 
 #define SOCKET_CMD_SSL_CONNECT_ALPN			0x53
-/*!<
+/*!< 
 	SSL-Socket Connect with ALPN command value.
 */
 
 #define SOCKET_CMD_RAW_SET_SOCK_OPT         0x54
+
+#define SOCKET_CMD_SECURE					0x56
+/*!<
+	Make secure a previously opened socket.
+*/
+
 
 
 #define PING_ERR_SUCCESS					0
@@ -336,7 +342,7 @@ typedef struct {
 /*!
 @struct	\
 	tstrConnectAlpnReply
-
+	
 @brief
 	Connect Reply, contains sock number, error value and index of negotiated application protocol.
 */

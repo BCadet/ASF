@@ -3,7 +3,7 @@
  *
  * \brief Provision AP with BLE example.
  *
- * Copyright (c) 2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -281,7 +281,7 @@ static void app_ble_wifi_provisioning(void)
 	// Initialize BLE stack on 3400.
 	m2m_ble_init();
 	m2m_wifi_req_unrestrict_ble();
-	ble_prov_init((uint8_t *)"WiFi Prov1");
+	ble_prov_init((uint8_t *)"WiFi Prov1",AT_BLE_AUTH_NO_MITM_NO_BOND);
 
 	while (1)
 	{

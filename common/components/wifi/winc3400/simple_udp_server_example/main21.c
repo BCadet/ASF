@@ -4,7 +4,7 @@
  *
  * \brief WINC3400 UDP Server Example.
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2020-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -72,6 +72,8 @@
  *    wifi_cb: M2M_WIFI_RESP_CON_STATE_CHANGED : CONNECTED
  *    wifi_cb: M2M_WIFI_REQ_DHCP_CONF : IP is xxx.xxx.xxx.xxx
  *    socket_cb: bind success!
+ * -# On the computer, run the udp_client.py script to start client.
+ * -# In the terminal window, the following text should appear:
  *    socket_cb: received app message.(1)
  *    . . .
  *    socket_cb: received app message.(10)

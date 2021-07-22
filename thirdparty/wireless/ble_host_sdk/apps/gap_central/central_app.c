@@ -3,7 +3,7 @@
  *
  * \brief GAP-Central application
  *
- * Copyright (c) 2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2018-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -455,7 +455,6 @@ int main(void)
 					{
 						DBG_LOG("***Gyroscope notification enabled status*** = 0x%02X", status);
 					}
-					break;
 				}
 			}
 		}

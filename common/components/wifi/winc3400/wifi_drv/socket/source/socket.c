@@ -4,7 +4,7 @@
  *
  * \brief BSD compatible socket interface.
  *
- * Copyright (c) 2017-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -66,6 +66,7 @@ MACROS
 #define SSL_FLAGS_BYPASS_X509               NBIT1
 #define SSL_FLAGS_CACHE_SESSION             NBIT4
 #define SSL_FLAGS_CHECK_CERTNAME            NBIT6
+#define SSL_FLAGS_DELAY                     NBIT7
 
 /*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
 PRIVATE DATA TYPES
@@ -139,7 +140,11 @@ NMI_API void Socket_ReadSocketData(SOCKET sock, tstrSocketRecvMsg *pstrRecv, uin
         u16Read = u16ReadCount;
         s16Diff = u16Read - gastrSockets[sock].u16UserBufferSize;
         if(s16Diff > 0)
+        {
+            /* We don't expect to be here. Firmware only sends data to the driver according to the application's buffer size.
+             * But it is worth keeping this check, eg in case the application calls recv again with a smaller buffer size, or in case of HIF hacking. */
             u16Read = gastrSockets[sock].u16UserBufferSize;
+        }
 
         if(hif_receive(u32Address, gastrSockets[sock].pu8UserBuffer, u16Read, 1) == M2M_SUCCESS)
         {
@@ -147,16 +152,15 @@ NMI_API void Socket_ReadSocketData(SOCKET sock, tstrSocketRecvMsg *pstrRecv, uin
             pstrRecv->s16BufferSize     = u16Read;
             pstrRecv->u16RemainingSize  -= u16Read;
 
-            gastrSockets[sock].u16UserBufferSize -= u16Read;
-            if(gastrSockets[sock].u16UserBufferSize == 0)
-                gastrSockets[sock].pu8UserBuffer = NULL;
+            gastrSockets[sock].u16UserBufferSize = 0;
+            gastrSockets[sock].pu8UserBuffer = NULL;
 
             if(gpfAppSocketCb)
                 gpfAppSocketCb(sock, u8SocketMsg, pstrRecv);
         }
         else
         {
-            M2M_INFO("(ERRR)Current <%d>\n", u16ReadCount);
+            M2M_ERR("Current <%d>\n", u16ReadCount);
         }
     }
 }
@@ -202,7 +206,7 @@ static void m2m_ip_cb(uint8 u8OpCode, uint16 u16BufferSize, uint32 u32Address)
         tstrSocketAcceptMsg     strAccept;
         if(hif_receive(u32Address, (uint8*)&strAcceptReply, sizeof(tstrAcceptReply), 0) == M2M_SUCCESS)
         {
-            if(strAcceptReply.sConnectedSock >= 0)
+            if((strAcceptReply.sConnectedSock >= 0) && (strAcceptReply.sConnectedSock < MAX_SOCKET))
             {
                 gastrSockets[strAcceptReply.sConnectedSock].u8SSLFlags  = 0;
                 gastrSockets[strAcceptReply.sConnectedSock].bIsUsed     = 1;
@@ -226,6 +230,7 @@ static void m2m_ip_cb(uint8 u8OpCode, uint16 u16BufferSize, uint32 u32Address)
     }
     else if((u8OpCode == SOCKET_CMD_CONNECT) || (u8OpCode == SOCKET_CMD_SSL_CONNECT) || (u8OpCode == SOCKET_CMD_SSL_CONNECT_ALPN))
     {
+        /* Note that for successful connections the fw always sends SOCKET_CMD_CONNECT, even for SSL connections. */
         tstrConnectAlpnReply    strConnectAlpnReply = {{0}};
         tstrSocketConnectMsg    strConnMsg;
         uint16                  u16HifSz = sizeof(tstrConnectAlpnReply);
@@ -233,20 +238,32 @@ static void m2m_ip_cb(uint8 u8OpCode, uint16 u16BufferSize, uint32 u32Address)
             u16HifSz = sizeof(tstrConnectReply);
         if(hif_receive(u32Address, (uint8*)&strConnectAlpnReply, u16HifSz, 0) == M2M_SUCCESS)
         {
-            strConnMsg.sock     = strConnectAlpnReply.strConnReply.sock;
-            strConnMsg.s8Error  = strConnectAlpnReply.strConnReply.s8Error;
-            if(strConnectAlpnReply.strConnReply.s8Error == SOCK_ERR_NO_ERROR)
+            if((strConnectAlpnReply.strConnReply.sock >= 0) && (strConnectAlpnReply.strConnReply.sock < MAX_SOCKET))
             {
-                gastrSockets[strConnMsg.sock].u16DataOffset = strConnectAlpnReply.strConnReply.u16AppDataOffset - M2M_HIF_HDR_OFFSET;
-                gastrSockets[strConnMsg.sock].u8AlpnStatus = strConnectAlpnReply.u8AppProtocolIdx;
+                uint8 u8Msg = SOCKET_MSG_CONNECT;
+
+                strConnMsg.sock     = strConnectAlpnReply.strConnReply.sock;
+                strConnMsg.s8Error  = strConnectAlpnReply.strConnReply.s8Error;
+
+                /* If the SOCKET_CMD_SSL_CONNECT op code is received and the socket was already connected, then the
+                    callback corresponds to an attempt to make the socket secure. */
+                if(0 != gastrSockets[strConnMsg.sock].u16DataOffset)
+                {
+                    u8Msg = SOCKET_MSG_SECURE;
+                }
+                if(strConnectAlpnReply.strConnReply.s8Error == SOCK_ERR_NO_ERROR)
+                {
+                    gastrSockets[strConnMsg.sock].u16DataOffset = strConnectAlpnReply.strConnReply.u16AppDataOffset - M2M_HIF_HDR_OFFSET;
+                    gastrSockets[strConnMsg.sock].u8AlpnStatus = strConnectAlpnReply.u8AppProtocolIdx;
+                }
+                else
+                {
+                    gastrSockets[strConnMsg.sock].u8ErrSource = strConnectAlpnReply.strConnReply.u8ErrSource;
+                    gastrSockets[strConnMsg.sock].u8ErrCode = strConnectAlpnReply.strConnReply.u8ErrCode;
+                }
+                if(gpfAppSocketCb)
+                    gpfAppSocketCb(strConnMsg.sock, u8Msg, &strConnMsg);
             }
-            else
-            {
-                gastrSockets[strConnMsg.sock].u8ErrSource = strConnectAlpnReply.strConnReply.u8ErrSource;
-                gastrSockets[strConnMsg.sock].u8ErrCode = strConnectAlpnReply.strConnReply.u8ErrCode;
-            }
-            if(gpfAppSocketCb)
-                gpfAppSocketCb(strConnMsg.sock, SOCKET_MSG_CONNECT, &strConnMsg);
         }
     }
     else if(u8OpCode == SOCKET_CMD_DNS_RESOLVE)
@@ -277,51 +294,55 @@ static void m2m_ip_cb(uint8 u8OpCode, uint16 u16BufferSize, uint32 u32Address)
         u16ReadSize = sizeof(tstrRecvReply);
         if(hif_receive(u32Address, (uint8*)&strRecvReply, u16ReadSize, 0) == M2M_SUCCESS)
         {
-            uint16 u16SessionID = 0;
-
-            sock            = strRecvReply.sock;
-            u16SessionID = strRecvReply.u16SessionID;
-            M2M_DBG("recv callback session ID = %d\r\n", u16SessionID);
-
-            /* Reset the Socket RX Pending Flag.
-            */
-            gastrSockets[sock].bIsRecvPending = 0;
-
-            s16RecvStatus   = NM_BSP_B_L_16(strRecvReply.s16RecvStatus);
-            u16DataOffset   = NM_BSP_B_L_16(strRecvReply.u16DataOffset);
-            strRecvMsg.strRemoteAddr.sin_port           = strRecvReply.strRemoteAddr.u16Port;
-            strRecvMsg.strRemoteAddr.sin_addr.s_addr    = strRecvReply.strRemoteAddr.u32IPAddr;
-
-            if(u16SessionID == gastrSockets[sock].u16SessionID)
+            if((strRecvReply.sock >= 0) && (strRecvReply.sock < MAX_SOCKET))
             {
-                if((s16RecvStatus > 0) && (s16RecvStatus < u16BufferSize))
-                {
-                    /* Skip incoming bytes until reaching the Start of Application Data.
-                    */
-                    u32Address += u16DataOffset;
+                uint16 u16SessionID = 0;
 
-                    /* Read the Application data and deliver it to the application callback in
-                    the given application buffer. If the buffer is smaller than the received data,
-                    the data is passed to the application in chunks according to its buffer size.
-                    */
-                    u16ReadSize = (uint16)s16RecvStatus;
-                    Socket_ReadSocketData(sock, &strRecvMsg, u8CallbackMsgID, u32Address, u16ReadSize);
+                sock            = strRecvReply.sock;
+                u16SessionID = strRecvReply.u16SessionID;
+                M2M_DBG("recv callback session ID = %d\r\n", u16SessionID);
+
+                /* Reset the Socket RX Pending Flag.
+                */
+                gastrSockets[sock].bIsRecvPending = 0;
+
+                s16RecvStatus   = NM_BSP_B_L_16(strRecvReply.s16RecvStatus);
+                u16DataOffset   = NM_BSP_B_L_16(strRecvReply.u16DataOffset);
+                strRecvMsg.strRemoteAddr.sin_port           = strRecvReply.strRemoteAddr.u16Port;
+                strRecvMsg.strRemoteAddr.sin_addr.s_addr    = strRecvReply.strRemoteAddr.u32IPAddr;
+
+                if(u16SessionID == gastrSockets[sock].u16SessionID)
+                {
+                    if((s16RecvStatus > 0) && (s16RecvStatus < u16BufferSize))
+                    {
+                        /* Skip incoming bytes until reaching the Start of Application Data.
+                        */
+                        u32Address += u16DataOffset;
+
+                        /* Read the Application data and deliver it to the application callback in
+                        the given application buffer. Firmware only sends data up to
+                        the size of the application buffer. For TCP, a new call to recv is needed
+                        in order to retrieve any outstanding data from firmware.
+                        */
+                        u16ReadSize = (uint16)s16RecvStatus;
+                        Socket_ReadSocketData(sock, &strRecvMsg, u8CallbackMsgID, u32Address, u16ReadSize);
+                    }
+                    else
+                    {
+                        /* Don't tidy up here. Application must call close().
+                        */
+                        strRecvMsg.s16BufferSize    = s16RecvStatus;
+                        strRecvMsg.pu8Buffer        = NULL;
+                        if(gpfAppSocketCb)
+                            gpfAppSocketCb(sock, u8CallbackMsgID, &strRecvMsg);
+                    }
                 }
                 else
                 {
-                    /* Don't tidy up here. Application must call close().
-                    */
-                    strRecvMsg.s16BufferSize    = s16RecvStatus;
-                    strRecvMsg.pu8Buffer        = NULL;
-                    if(gpfAppSocketCb)
-                        gpfAppSocketCb(sock, u8CallbackMsgID, &strRecvMsg);
+                    M2M_DBG("Discard recv callback %d %d \r\n", u16SessionID, gastrSockets[sock].u16SessionID);
+                    if(u16ReadSize < u16BufferSize)
+                        hif_receive(0, NULL, 0, 1);
                 }
-            }
-            else
-            {
-                M2M_DBG("Discard recv callback %d %d \r\n", u16SessionID, gastrSockets[sock].u16SessionID);
-                if(u16ReadSize < u16BufferSize)
-                    hif_receive(0, NULL, 0, 1);
             }
         }
     }
@@ -337,22 +358,25 @@ static void m2m_ip_cb(uint8 u8OpCode, uint16 u16BufferSize, uint32 u32Address)
 
         if(hif_receive(u32Address, (uint8*)&strReply, sizeof(tstrSendReply), 0) == M2M_SUCCESS)
         {
-            uint16 u16SessionID = 0;
-
-            sock = strReply.sock;
-            u16SessionID = strReply.u16SessionID;
-            M2M_DBG("send callback session ID = %d\r\n", u16SessionID);
-
-            s16Rcvd = NM_BSP_B_L_16(strReply.s16SentBytes);
-
-            if(u16SessionID == gastrSockets[sock].u16SessionID)
+            if((strReply.sock >=0) && (strReply.sock < MAX_SOCKET))
             {
-                if(gpfAppSocketCb)
-                    gpfAppSocketCb(sock, u8CallbackMsgID, &s16Rcvd);
-            }
-            else
-            {
-                M2M_DBG("Discard send callback %d %d \r\n", u16SessionID, gastrSockets[sock].u16SessionID);
+                uint16 u16SessionID = 0;
+
+                sock = strReply.sock;
+                u16SessionID = strReply.u16SessionID;
+                M2M_DBG("send callback session ID = %d\r\n", u16SessionID);
+
+                s16Rcvd = NM_BSP_B_L_16(strReply.s16SentBytes);
+
+                if(u16SessionID == gastrSockets[sock].u16SessionID)
+                {
+                    if(gpfAppSocketCb)
+                        gpfAppSocketCb(sock, u8CallbackMsgID, &s16Rcvd);
+                }
+                else
+                {
+                    M2M_DBG("Discard send callback %d %d \r\n", u16SessionID, gastrSockets[sock].u16SessionID);
+                }
             }
         }
     }
@@ -433,7 +457,7 @@ Return
         - Negative value for error.
         - ZERO or positive value as a socket ID if successful.
 *********************************************************************/
-SOCKET socket(uint16 u16Domain, uint8 u8Type, uint8 u8Flags)
+SOCKET socket(uint16 u16Domain, uint8 u8Type, uint8 u8Config)
 {
     SOCKET                  sock = -1;
     uint8                   u8SockID;
@@ -457,12 +481,16 @@ SOCKET socket(uint16 u16Domain, uint8 u8Type, uint8 u8Flags)
                     sock = (SOCKET)u8SockID;
                     m2m_memset((uint8*)pstrSock, 0, sizeof(tstrSocket));
                     /* In the current implementation, SSL flags only have meaning for the TCP socket case. */
-                    if(u8Flags & SOCKET_FLAGS_SSL)
+                    if(u8Config != SOCKET_CONFIG_SSL_OFF)
                     {
                         tstrSSLSocketCreateCmd  strSSLCreate;
+
                         strSSLCreate.sslSock = sock;
+                        SOCKET_REQUEST(SOCKET_CMD_SSL_CREATE, (uint8 *)&strSSLCreate, sizeof(tstrSSLSocketCreateCmd), 0, 0, 0);
+
                         pstrSock->u8SSLFlags = SSL_FLAGS_ACTIVE;
-                        SOCKET_REQUEST(SOCKET_CMD_SSL_CREATE, (uint8*)&strSSLCreate, sizeof(tstrSSLSocketCreateCmd), 0, 0, 0);
+                        if(u8Config == SOCKET_CONFIG_SSL_DELAY)
+                            pstrSock->u8SSLFlags |= SSL_FLAGS_DELAY;
                     }
                     break;
                 }
@@ -487,7 +515,7 @@ SOCKET socket(uint16 u16Domain, uint8 u8Type, uint8 u8Flags)
         else if(u8Type == SOCK_RAW)
         {
             /* Only raw IP packets are supported */
-            if(u8Flags & SOCKET_FLAGS_IPPROTO_RAW)
+            if(u8Config == SOCKET_CONFIG_IPPROTO_RAW)
             {
                 pstrSock = &gastrSockets[RAW_SOCK_ID];
                 if(!pstrSock->bIsUsed)
@@ -527,7 +555,7 @@ Return
 sint8 bind(SOCKET sock, struct sockaddr *pstrAddr, uint8 u8AddrLen)
 {
     sint8   s8Ret = SOCK_ERR_INVALID_ARG;
-    if((pstrAddr != NULL) && (sock >= 0) && (gastrSockets[sock].bIsUsed == 1) && (u8AddrLen != 0))
+    if((pstrAddr != NULL) && (sock >= 0) && (sock < MAX_SOCKET) && (gastrSockets[sock].bIsUsed == 1) && (u8AddrLen != 0))
     {
         tstrBindCmd         strBind;
 
@@ -562,7 +590,7 @@ sint8 listen(SOCKET sock, uint8 backlog)
 {
     sint8   s8Ret = SOCK_ERR_INVALID_ARG;
 
-    if(sock >= 0 && (gastrSockets[sock].bIsUsed == 1))
+    if((sock >= 0) && (sock < MAX_SOCKET) && (gastrSockets[sock].bIsUsed == 1))
     {
         tstrListenCmd       strListen;
 
@@ -590,7 +618,7 @@ sint8 accept(SOCKET sock, struct sockaddr *addr, uint8 *addrlen)
 {
     sint8   s8Ret = SOCK_ERR_INVALID_ARG;
 
-    if(sock >= 0 && (gastrSockets[sock].bIsUsed == 1))
+    if((sock >= 0) && (sock < MAX_SOCKET) && (gastrSockets[sock].bIsUsed == 1))
     {
         s8Ret = SOCK_ERR_NO_ERROR;
     }
@@ -608,7 +636,7 @@ Return
 sint8 connect(SOCKET sock, struct sockaddr *pstrAddr, uint8 u8AddrLen)
 {
     sint8   s8Ret = SOCK_ERR_INVALID_ARG;
-    if((sock >= 0) && (pstrAddr != NULL) && (gastrSockets[sock].bIsUsed == 1) && (u8AddrLen != 0))
+    if((sock >= 0) && (sock < MAX_SOCKET) && (pstrAddr != NULL) && (gastrSockets[sock].bIsUsed == 1) && (u8AddrLen != 0))
     {
         tstrConnectCmd  strConnect;
         uint8           u8Cmd = SOCKET_CMD_CONNECT;
@@ -631,6 +659,42 @@ sint8 connect(SOCKET sock, struct sockaddr *pstrAddr, uint8 u8AddrLen)
 }
 /*********************************************************************
 Function
+        secure
+
+Description
+        Make secure (TLS) an open TCP client connection.
+
+Return
+*********************************************************************/
+sint8 secure(SOCKET sock)
+{
+    sint8   s8Ret = SOCK_ERR_INVALID_ARG;
+    if((sock >= 0) && (sock < MAX_SOCKET) && (gastrSockets[sock].bIsUsed == 1))
+    {
+        if(
+                (gastrSockets[sock].u8SSLFlags & SSL_FLAGS_ACTIVE)
+            &&  (gastrSockets[sock].u8SSLFlags & SSL_FLAGS_DELAY)
+            &&  (gastrSockets[sock].u16DataOffset != 0)
+        )
+        {
+            tstrConnectCmd  strConnect = {0};
+
+            gastrSockets[sock].u8SSLFlags &= ~SSL_FLAGS_DELAY;
+            strConnect.u8SslFlags = gastrSockets[sock].u8SSLFlags;
+            strConnect.sock = sock;
+            strConnect.u16SessionID = gastrSockets[sock].u16SessionID;
+
+            s8Ret = SOCKET_REQUEST(SOCKET_CMD_SECURE, (uint8*)&strConnect, sizeof(tstrConnectCmd), NULL, 0, 0);
+            if(s8Ret != SOCK_ERR_NO_ERROR)
+            {
+                s8Ret = SOCK_ERR_INVALID;
+            }
+        }
+    }
+    return s8Ret;
+}
+/*********************************************************************
+Function
         send
 
 Description
@@ -641,7 +705,7 @@ sint16 send(SOCKET sock, void *pvSendBuffer, uint16 u16SendLength, uint16 flags)
 {
     sint16  s16Ret = SOCK_ERR_INVALID_ARG;
 
-    if((sock >= 0) && (pvSendBuffer != NULL) && (u16SendLength <= SOCKET_BUFFER_MAX_LENGTH) && (gastrSockets[sock].bIsUsed == 1))
+    if((sock >= 0) && (sock < MAX_SOCKET) && (pvSendBuffer != NULL) && (u16SendLength <= SOCKET_BUFFER_MAX_LENGTH) && (gastrSockets[sock].bIsUsed == 1))
     {
         uint16          u16DataOffset;
         tstrSendCmd     strSend;
@@ -658,7 +722,10 @@ sint16 send(SOCKET sock, void *pvSendBuffer, uint16 u16SendLength, uint16 flags)
         {
             u16DataOffset = UDP_TX_PACKET_OFFSET;
         }
-        if(gastrSockets[sock].u8SSLFlags & SSL_FLAGS_ACTIVE)
+        if(
+                (gastrSockets[sock].u8SSLFlags & SSL_FLAGS_ACTIVE)
+            &&  (!(gastrSockets[sock].u8SSLFlags & SSL_FLAGS_DELAY))
+        )
         {
             u8Cmd           = SOCKET_CMD_SSL_SEND;
             u16DataOffset   = gastrSockets[sock].u16DataOffset;
@@ -727,7 +794,7 @@ sint16 recv(SOCKET sock, void *pvRecvBuf, uint16 u16BufLen, uint32 u32Timeoutmse
 {
     sint16  s16Ret = SOCK_ERR_INVALID_ARG;
 
-    if((sock >= 0) && (pvRecvBuf != NULL) && (u16BufLen != 0) && (gastrSockets[sock].bIsUsed == 1))
+    if((sock >= 0) && (sock < MAX_SOCKET) && (pvRecvBuf != NULL) && (u16BufLen != 0) && (gastrSockets[sock].bIsUsed == 1))
     {
         s16Ret = SOCK_ERR_NO_ERROR;
         gastrSockets[sock].pu8UserBuffer        = (uint8*)pvRecvBuf;
@@ -739,7 +806,10 @@ sint16 recv(SOCKET sock, void *pvRecvBuf, uint16 u16BufLen, uint32 u32Timeoutmse
             uint8       u8Cmd = SOCKET_CMD_RECV;
 
             gastrSockets[sock].bIsRecvPending = 1;
-            if(gastrSockets[sock].u8SSLFlags & SSL_FLAGS_ACTIVE)
+            if(
+                    (gastrSockets[sock].u8SSLFlags & SSL_FLAGS_ACTIVE)
+                &&  (!(gastrSockets[sock].u8SSLFlags & SSL_FLAGS_DELAY))
+            )
             {
                 u8Cmd = SOCKET_CMD_SSL_RECV;
             }
@@ -777,7 +847,7 @@ sint8 close(SOCKET sock)
 
     M2M_INFO("Sock to delete <%d> (used %u)\n", sock, gastrSockets[sock].bIsUsed);
 
-    if(sock >= 0 && (gastrSockets[sock].bIsUsed == 1))
+    if((sock >= 0) && (sock < MAX_SOCKET) && (gastrSockets[sock].bIsUsed == 1))
     {
         uint8   u8Cmd = SOCKET_CMD_CLOSE;
         tstrCloseCmd strclose;
@@ -809,7 +879,7 @@ Return
 sint16 recvfrom(SOCKET sock, void *pvRecvBuf, uint16 u16BufLen, uint32 u32Timeoutmsec)
 {
     sint16  s16Ret = SOCK_ERR_NO_ERROR;
-    if((sock >= 0) && (pvRecvBuf != NULL) && (u16BufLen != 0) && (gastrSockets[sock].bIsUsed == 1))
+    if((sock >= 0) && (sock < MAX_SOCKET) && (pvRecvBuf != NULL) && (u16BufLen != 0) && (gastrSockets[sock].bIsUsed == 1))
     {
         if(gastrSockets[sock].bIsUsed)
         {
@@ -1044,7 +1114,7 @@ sint8 setsockopt(SOCKET sock, uint8  u8Level, uint8  option_name,
                  const void *option_value, uint16 u16OptionLen)
 {
     sint8   s8Ret = SOCK_ERR_INVALID_ARG;
-    if((sock >= 0)  && (option_value != NULL)  && (gastrSockets[sock].bIsUsed == 1))
+    if((sock >= 0) && (sock < MAX_SOCKET) && (option_value != NULL) && (gastrSockets[sock].bIsUsed == 1))
     {
         if(u8Level == SOL_RAW)
         {

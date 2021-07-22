@@ -4,7 +4,7 @@
  *
  * \brief WINC3400 BLE API for Applications
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -774,7 +774,7 @@ typedef struct
     uint8_t* init_value; /**< initial value of this characteristic  */
     uint16_t value_init_len; /**< initial value length */
     uint16_t value_max_len; /**< maximum possible length of the char. value */
-    at_ble_attr_permissions_t value_permissions; /**< Value permissions */ //TODO: can this value be deduced from properties field ?
+    at_ble_attr_permissions_t value_permissions; /**< Value permissions */
 
     uint8_t* user_desc; /**< a user friendly description, this value will be stored in the relevant descriptor, if no user description is desired set to NULL */
     uint16_t user_desc_len; /**< the user friendly description length, this value will be stored in the relevant descriptor, if no user description is desired set to 0*/
@@ -864,7 +864,7 @@ typedef struct
     at_ble_addr_t dev_addr;
     uint8_t adv_data[AT_BLE_ADV_MAX_SIZE];
     uint8_t adv_data_len;
-
+    uint8_t rssi;
 }at_ble_scan_info_t;
 
 

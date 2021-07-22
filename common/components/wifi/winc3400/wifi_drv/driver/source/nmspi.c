@@ -4,7 +4,7 @@
  *
  * \brief This module contains WINC3400 SPI protocol bus APIs implementation.
  *
- * Copyright (c) 2017-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -34,8 +34,6 @@
 #include "common/include/nm_common.h"
 
 #ifdef CONF_WINC_USE_SPI
-
-#define USE_OLD_SPI_SW
 
 #include "bus_wrapper/include/nm_bus_wrapper.h"
 #include "nmspi.h"
@@ -593,13 +591,7 @@ _RETRY_:
         cmd = CMD_INTERNAL_WRITE;
         clockless = 1;
     }
-    //else
-    //{
-    //  cmd = CMD_SINGLE_WRITE;
-    //  clockless = 0;
-    //}
 
-#if defined USE_OLD_SPI_SW
     result = spi_cmd(cmd, addr, u32data, 4, clockless);
     if(result != N_OK) {
         M2M_ERR("[nmi spi]: Failed cmd, write reg (%08x)...\n", (unsigned int)addr);
@@ -619,20 +611,7 @@ _RETRY_:
 		goto _FAIL_;
 #endif
     }
-
-#else
-
-    result = spi_cmd_complete(cmd, addr, (uint8 *)&u32data, 4, clockless);
-    if(result != N_OK) {
-        M2M_ERR("[nmi spi]: Failed cmd, write reg (%08x)...\n", addr);
-#if (defined XDMAC_SPI) && ((defined __SAME70Q21__) || (defined __SAME70Q21B__))
-		return N_FAIL;
-#else
-		goto _FAIL_;
-#endif
-    }
-
-#endif
+	
 _FAIL_:
     if(result != N_OK)
     {
@@ -670,7 +649,6 @@ _RETRY_:
     /**
         Command
     **/
-#if defined USE_OLD_SPI_SW
     //Workaround hardware problem with single byte transfers over SPI bus
     if(size == 1)
         size = 2;
@@ -694,17 +672,6 @@ _RETRY_:
 		goto _FAIL_;
 #endif
     }
-#else
-    result = spi_cmd_complete(cmd, addr, NULL, size, 0);
-    if(result != N_OK) {
-        M2M_ERR("[nmi spi]: Failed cmd, write block (%08x)...\n", addr);
-#if (defined XDMAC_SPI) && ((defined __SAME70Q21__) || (defined __SAME70Q21B__))
-		return N_FAIL;
-#else
-		goto _FAIL_;
-#endif
-    }
-#endif
 
     /**
         Data
@@ -773,7 +740,6 @@ _RETRY_:
         clockless = 1;
     }
 
-#if defined USE_OLD_SPI_SW
     result = spi_cmd(cmd, addr, 0, 4, clockless);
     if(result != N_OK) {
         M2M_ERR("[nmi spi]: Failed cmd, read reg (%08x)...\n", (unsigned int)addr);
@@ -804,18 +770,6 @@ _RETRY_:
 		goto _FAIL_;
 #endif
     }
-#else
-    result = spi_cmd_complete(cmd, addr, (uint8 *)&tmp[0], 4, clockless);
-    if(result != N_OK) {
-        M2M_ERR("[nmi spi]: Failed cmd, read reg (%08x)...\n", addr);
-#if (defined XDMAC_SPI) && ((defined __SAME70Q21__) || (defined __SAME70Q21B__))
-		return N_FAIL;
-#else
-		goto _FAIL_;
-#endif
-    }
-
-#endif
 
     *u32data = tmp[0] |
                ((uint32)tmp[1] << 8) |
@@ -853,17 +807,14 @@ sint8 nm_spi_read_block(uint32 addr, uint8 *buf, uint16 size)
     uint8 cmd = CMD_DMA_EXT_READ;
     sint8 result;
     uint8 retry = SPI_RETRY_COUNT;
-#if defined USE_OLD_SPI_SW
     uint8 tmp[2];
     uint8 single_byte_workaround = 0;
-#endif
 
 _RETRY_:
 
     /**
         Command
     **/
-#if defined USE_OLD_SPI_SW
     if(size == 1)
     {
         //Workaround hardware problem with single byte transfers over SPI bus
@@ -905,17 +856,6 @@ _RETRY_:
         M2M_ERR("[nmi spi]: Failed block data read...\n");
         goto _FAIL_;
     }
-#else
-    result = spi_cmd_complete(cmd, addr, buf, size, 0);
-    if(result != N_OK) {
-        M2M_ERR("[nmi spi]: Failed cmd, read block (%08x)...\n", addr);
-#if (defined XDMAC_SPI) && ((defined __SAME70Q21__) || (defined __SAME70Q21B__))
-		return N_FAIL;
-#else
-		goto _FAIL_;
-#endif
-    }
-#endif
 
 _FAIL_:
     if(result != N_OK)

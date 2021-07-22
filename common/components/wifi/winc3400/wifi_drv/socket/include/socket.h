@@ -4,7 +4,7 @@
  *
  * \brief BSD compatible socket interface.
  *
- * Copyright (c) 2017-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -110,20 +110,60 @@ MACROS
 
 #define SOCKET_FLAGS_SSL                                    0x01
 /*!<
-    This flag shall be passed to the socket API for SSL session.
+    This flag may be set in the u8Config parameter of @ref socket (when the
+    u8Type parameter is @ref SOCK_STREAM), to create a TLS socket.\n
+    Note that the number of TLS sockets is limited to 2.\n
+    This flag is kept for legacy purposes. It is recommended that applications
+    use @ref SOCKET_CONFIG_SSL_ON instead.
 */
 
 #define SOCKET_FLAGS_IPPROTO_RAW                            0x02
 /*!<
-    This flag shall be passed to the @ref socket API when requesting for @ref SOCK_RAW.
-    Passing this flag allows the Application to use a socket of type raw to send/receive frames.
+    This flag may be set in the u8Config parameter of @ref socket (when the
+    u8Type parameter is @ref SOCK_RAW), to allow the Application to use a
+    socket of type raw to send/receive frames.\n
+    This flag is kept for legacy purposes. It is recommended that applications
+    use @ref SOCKET_CONFIG_IPPROTO_RAW instead.
+*/
+
+#define SOCKET_CONFIG_DEFAULT                               0
+/*!<
+    This value may be passed in the u8Config parameter of @ref socket to create
+    a socket with default configuration.
+*/
+
+#define SOCKET_CONFIG_SSL_OFF                               0
+/*!<
+    This value may be passed in the u8Config parameter of @ref socket (when the
+    u8Type parameter is @ref SOCK_STREAM), to create a socket not capable of
+    TLS.
+*/
+#define SOCKET_CONFIG_SSL_ON                                1
+/*!<
+    This value may be passed in the u8Config parameter of @ref socket (when the
+    u8Type parameter is @ref SOCK_STREAM), to create a TLS socket.\n
+    Note that the number of TLS sockets is limited to 2.
+*/
+#define SOCKET_CONFIG_SSL_DELAY                             2
+/*!<
+    This value may be passed in the u8Config parameter of @ref socket (when the
+    u8Type parameter is @ref SOCK_STREAM), to create a TCP socket which has the
+    potential to upgrade to a TLS socket later (by calling @ref secure).\n
+    Note that the total number of TLS sockets and potential TLS sockets is
+    limited to 2.
+*/
+
+#define SOCKET_CONFIG_IPPROTO_RAW                           2
+/*!<
+    This value may be passed in the u8Config parameter of @ref socket (when the u8Type parameter is
+    @ref SOCK_RAW), to allow the Application to use a socket of type raw to send/receive frames.
     This assumes that the application will fill the IP and protocol (UDP, TCP, ICMP) headers.
     Typically, when sending ICMP frames via RAW socket, there are two options that can be used:
         - IPPROTO_RAW  - Raw IP packets, implies that IP_HDRINCL is enabled and therefore
                          the host application should fill in the corresponding protocol header checksum.
         - IPPROTO_ICMP - ICMP packets, the WINC would fill in the ICMP header checksum (not supported).
     @warning
-        Please note that only SOCKET_FLAGS_IPPROTO_RAW is currently supported.
+        Please note that only SOCKET_CONFIG_IPPROTO_RAW is currently supported.
         Raw sockets can be used to send TCP/UDP/ICMP packets, however, the current implementation only
         supports receiving Raw ICMP frames, which also requires @ref SO_ICMP_FILTER to be set appropriately.
 */
@@ -293,32 +333,44 @@ MACROS
 
 #define SO_SSL_BYPASS_X509_VERIF                            0x01
 /*!<
-    Allow an opened SSL socket to bypass the X509 certificate
-    verification process.
-    It is highly recommended NOT to use this socket option in production
-    software applications. It is intended for debugging and testing
-    purposes only.\n
-    The option value should be cast to int type and it is handled
-    as a boolean flag.
+    Allow an opened SSL socket to bypass the X509 certificate verification
+    process.
+    It is recommended NOT to use this socket option in production software
+    applications. It is supported for debugging and testing purposes.\n
+    The option value should be casted to int type.\n
+    0: do not bypass the X509 certificate verification process (default,
+    recommended).\n
+    1: bypass the X509 certificate verification process.\n
+
+    This option only takes effect if it is set after calling @ref socket and
+    before calling @ref connect or @ref secure.
 */
 
 #define SO_SSL_SNI                                          0x02
 /*!<
-    Set the Server Name Indicator (SNI) for an SSL socket. The
-    SNI is a NULL terminated string containing the server name
-    associated with the connection. It must not exceed the size
-    of @ref HOSTNAME_MAX_SIZE. If the SNI is not a null string,
-    then TLS Client Hello messages will include the SNI extension.
+    Set the Server Name Indicator (SNI) for an SSL socket. The SNI is a NULL-
+    terminated string containing the server name associated with the
+    connection. Its size must not exceed @ref HOSTNAME_MAX_SIZE. If the SNI is
+    not a null string, then TLS Client Hello messages will include the SNI
+    extension.\n
+
+    This option only takes effect if it is set after calling @ref socket and
+    before calling @ref connect or @ref secure.
 */
 
 #define SO_SSL_ENABLE_SESSION_CACHING                       0x03
 /*!<
-    Allow the TLS to cache the session information for fast
-    TLS session establishment in future connections using the
-    TLS Protocol session resume features.\n
-    The option value should be cast to int type and it is handled
-    as a boolean flag.
+    This option allow the TLS to cache the session information for fast TLS
+    session establishment in future connections using the TLS Protocol session
+    resume features.\n
+    The option value should be casted to int type.\n
+    0: disable TLS session caching (default).\n
+    1: enable TLS session caching.\n
+    Note that TLS session caching is always enabled in TLS Server Mode and this
+    option is ignored.\n
 
+    This option only takes effect if it is set after calling @ref socket and
+    before calling @ref connect or @ref secure.
 */
 
 #define SO_SSL_ENABLE_CERTNAME_VALIDATION                   0x04
@@ -327,24 +379,26 @@ MACROS
     certificate subject common name. If there is no server name
     provided (via the @ref SO_SSL_SNI option), setting this option
     does nothing.\n
-    The option value should be cast to int type and it is handled
-    as a boolean flag.
-*/
+    The option value should be casted to int type.\n
+    0: disable server certificate name validation (default).\n
+    1: enable server certificate name validation (recommended).\n
 
-#define SO_SSL_ENABLE_SNI_VALIDATION                        0x04
-/*!<
-    Legacy name for @ref SO_SSL_ENABLE_CERTNAME_VALIDATION.\n
-    The option value should be cast to int type and it is handled
-    as a boolean flag.
+    This option only takes effect if it is set after calling @ref socket and
+    before calling @ref connect or @ref secure.
 */
 
 #define SO_SSL_ALPN                                         0x05
 /*!<
     Set the list to use for Application-Layer Protocol Negotiation
-    for an SSL socket. \n
+    for an SSL socket.\n
     This option is intended for internal use and should not be
-    used by the application. Applications should use the API
+    used by the application. Applications should use the API @ref
     set_alpn_list.
+*/
+
+#define SO_SSL_ENABLE_SNI_VALIDATION                        0x04
+/*!<
+    Legacy name for @ref SO_SSL_ENABLE_CERTNAME_VALIDATION.\n
 */
 /**@}*/     //SSLSocketOptions
 
@@ -719,10 +773,14 @@ typedef enum {
     /*!<
         Sendto socket event.
     */
-    SOCKET_MSG_RECVFROM
+    SOCKET_MSG_RECVFROM,
     /*!<
         Recvfrom socket event.
     */
+    SOCKET_MSG_SECURE
+/*!<
+        Existing socket made secure event.
+*/
 } tenuSocketCallbackMsgType;
 
 /*!
@@ -791,20 +849,21 @@ typedef struct {
 
 @brief  Socket connect status.
 
-    Socket connect information is returned through this structure in response to the asynchronous call to the @ref connect socket function.
-    This structure together with the event @ref SOCKET_MSG_CONNECT are passed-in parameters to the callback function.
+    Socket connect information is returned through this structure in response to an asynchronous call to the @ref connect socket function
+    or the @ref secure socket function.
+    This structure and the event @ref SOCKET_MSG_CONNECT or @ref SOCKET_MSG_SECURE are passed in parameters to the callback function.
     If the application receives this structure with a negative value in s8Error, the application should call @ref close().
 */
 typedef struct {
     SOCKET  sock;
     /*!<
-        Socket ID referring to the socket passed to the connect function call.
+        Socket ID referring to the socket passed to the @ref connect or @ref secure function call.
     */
     sint8       s8Error;
     /*!<
-        Connect error code.
-        Holding a value of ZERO for a successful connect or otherwise a negative
-        error code corresponding to the type of error.
+        Connect error code:\n
+        - ZERO for a successful connect or successful secure. \n
+        - Otherwise a negative error code corresponding to the type of error.
     */
 } tstrSocketConnectMsg;
 
@@ -814,11 +873,12 @@ typedef struct {
 
 @brief  Socket recv status.
 
-    Socket receive information is returned through this structure in response to the asynchronous call to the recv or recvfrom socket functions.
-    This structure together with the events @ref SOCKET_MSG_RECV or @ref SOCKET_MSG_RECVFROM are passed-in parameters to the callback function.
+    Socket receive information is returned through this structure in response to the asynchronous call to the @ref recv or @ref recvfrom socket functions.
+    This structure, together with the events @ref SOCKET_MSG_RECV or @ref SOCKET_MSG_RECVFROM, is passed-in parameters to the callback function.
 @remark
-    In case the received data from the remote peer is larger than the USER buffer size defined during the asynchronous call to the @ref recv function,
-    only data up to the USER buffer size is delivered to the user. The user must call @ref recv again in order to receive the remaining data.
+    After receiving this structure, the application should issue a new call to @ref recv or @ref recvfrom in order to receive subsequent data.
+    In the case of @ref SOCKET_MSG_RECVFROM (UDP), any further data in the same datagram is dropped, then subsequent datagrams are buffered on the WINC until the application provides a buffer via a new call to @ref recvfrom.
+    In the case of @ref SOCKET_MSG_RECV (TCP), all subsequent data is buffered on the WINC until the application provides a buffer via a new call to @ref recv.
     A negative or zero buffer size indicates an error with the following code:
     @ref SOCK_ERR_NO_ERROR          : Socket connection closed. The application should now call @ref close().
     @ref SOCK_ERR_CONN_ABORTED      : Socket connection aborted. The application should now call @ref close().
@@ -836,7 +896,7 @@ typedef struct {
     */
     uint16                  u16RemainingSize;
     /*!<
-        The number of bytes remaining in the current @ref recv operation.
+        This field is used internally by the driver. In normal operation, this field will be 0 when the application receives this structure.
     */
     struct sockaddr_in      strRemoteAddr;
     /*!<
@@ -873,6 +933,7 @@ typedef struct {
                   - @ref SOCKET_MSG_SEND
                   - @ref SOCKET_MSG_SENDTO
                   - @ref SOCKET_MSG_RECVFROM
+                  - @ref SOCKET_MSG_SECURE
 
 @param [in] pvMsg
                 Pointer to message structure. Existing types are:
@@ -1099,7 +1160,7 @@ NMI_API uint8 IsSocketReady(void);
 NMI_API void registerSocketCallback(tpfAppSocketCb socket_cb, tpfAppResolveCb resolve_cb);
 /*!
 @fn \
-    NMI_API SOCKET socket(uint16 u16Domain, uint8 u8Type, uint8 u8Flags);
+    NMI_API SOCKET socket(uint16 u16Domain, uint8 u8Type, uint8 u8Config);
     Synchronous socket allocation function based on the specified socket type. Created sockets are non-blocking and their possible types are either TCP or a UDP sockets.
     The maximum allowed number of TCP sockets is @ref TCP_SOCK_MAX sockets while the maximum number of UDP sockets that can be created simultaneously is @ref UDP_SOCK_MAX sockets.
 
@@ -1112,17 +1173,33 @@ NMI_API void registerSocketCallback(tpfAppSocketCb socket_cb, tpfAppResolveCb re
                 - [SOCK_DGRAM](@ref SOCK_DGRAM)
                 - [SOCK_RAW](@ref SOCK_RAW)
 
-@param [in] u8Flags
-                Used to specify the socket creation flags. It shall be set to zero for normal TCP/UDP sockets,
-                or [SOCKET_FLAGS_SSL](@ref SOCKET_FLAGS_SSL) if the socket is used for SSL session or [SOCKET_FLAGS_IPPROTO_RAW](@ref SOCKET_FLAGS_IPPROTO_RAW) if the socket is used for raw ICMP frames. The use of the flag
-                [SOCKET_FLAGS_SSL](@ref SOCKET_FLAGS_SSL) or [SOCKET_FLAGS_IPPROTO_RAW](@ref SOCKET_FLAGS_IPPROTO_RAW) has no meaning in case of UDP sockets.
+@param[in]  u8Config
+                Used to specify the socket configuration. The interpretation of
+                this parameter depends on the setting of u8Type.\n
+                - When u8Type is [SOCK_STREAM](@ref SOCK_STREAM) the following configuration values
+                are defined:\n
+                    - [SOCKET_CONFIG_SSL_OFF](@ref SOCKET_CONFIG_SSL_OFF): The socket is not secured by
+                    TLS.\n
+                    - [SOCKET_CONFIG_SSL_ON](@ref SOCKET_CONFIG_SSL_ON): The socket is secured by TLS.\n
+                    - [SOCKET_CONFIG_SSL_DELAY](@ref SOCKET_CONFIG_SSL_DELAY): The socket is not secured
+                    by TLS, but may be secured later, by calling @ref secure.\n
+                - When u8Type is [SOCK_RAW](@ref SOCK_RAW), the following configuration values
+                are defined:\n
+                    - [SOCKET_CONFIG_IPPROTO_RAW](@ref SOCKET_CONFIG_IPPROTO_RAW): The socket is to be
+                    used for raw ICMP frames.\n
+                - For all values of u8Type, the following configuration values
+                are defined:\n
+                    - [SOCKET_CONFIG_DEFAULT](@ref SOCKET_CONFIG_DEFAULT): The default configuration.\n
+                All other configuration values are reserved and should not be
+                used.
 
 @pre
     The @ref socketInit function must be called once at the beginning of the application to initialize the socket handler.
-    before any call to the socket function can be made.
+    before any call to the @ref socket function can be made.
 
 @see
     connect
+    secure
     bind
     listen
     accept
@@ -1149,17 +1226,17 @@ socket operations. Socket creation is dependent on the socket type.
 @code
     SOCKET UdpServerSocket = -1;
 
-    UdpServerSocket = socket(AF_INET, SOCK_DGRAM, 0);
+    UdpServerSocket = socket(AF_INET, SOCK_DGRAM, SOCKET_CONFIG_DEFAULT);
 
 @endcode
 \subsection sub2 TCP example
 @code
     static SOCKET tcp_client_socket = -1;
 
-    tcp_client_socket = socket(AF_INET, SOCK_STREAM, 0));
+    tcp_client_socket = socket(AF_INET, SOCK_STREAM, SOCKET_CONFIG_DEFAULT));
 @endcode
 */
-NMI_API SOCKET socket(uint16 u16Domain, uint8 u8Type, uint8 u8Flags);
+NMI_API SOCKET socket(uint16 u16Domain, uint8 u8Type, uint8 u8Config);
 /*!
 \fn \
     NMI_API sint8 bind(SOCKET sock, struct sockaddr *pstrAddr, uint8 u8AddrLen);
@@ -1210,7 +1287,7 @@ NMI_API SOCKET socket(uint16 u16Domain, uint8 u8Type, uint8 u8Flags);
 
     if(udpServerSocket == -1)
     {
-        udpServerSocket = socket(AF_INET,SOCK_DGRAM,0);
+        udpServerSocket = socket(AF_INET,SOCK_DGRAM,SOCKET_CONFIG_DEFAULT);
         if(udpServerSocket >= 0)
         {
             addr.sin_family     = AF_INET;
@@ -1425,7 +1502,7 @@ NMI_API sint8 accept(SOCKET sock, struct sockaddr *addr, uint8 *addrlen);
     SOCKET TcpClientSocket =-1;
     int ret = -1
 
-    TcpClientSocket = socket(AF_INET,SOCK_STREAM,0);
+    TcpClientSocket = socket(AF_INET,SOCK_STREAM,SOCKET_CONFIG_DEFAULT);
     Serv_Addr.sin_family = AF_INET;
     Serv_Addr.sin_port = _htons(1234);
     Serv_Addr.sin_addr.s_addr = inet_addr(SERVER);
@@ -1471,6 +1548,41 @@ NMI_API sint8 accept(SOCKET sock, struct sockaddr *addr, uint8 *addrlen);
 @endcode
 */
 NMI_API sint8 connect(SOCKET sock, struct sockaddr *pstrAddr, uint8 u8AddrLen);
+/*!
+@fn \
+    sint8 secure(SOCKET sock);
+
+    Converts an (insecure) TCP connection with a remote server into a secure TLS-over-TCP connection.
+    It may be called after both of the following:\n
+    - a TCP socket has been created by the @ref socket function, with u8Config parameter set to
+    @ref SOCKET_CONFIG_SSL_DELAY.\n
+    - a successful connection has been made on the socket via the @ref connect function.
+    This is an asynchronous API; the application socket callback function is notified of the result
+    of the attempt to make the connection secure through the event @ref SOCKET_MSG_SECURE, along
+    with a structure @ref tstrSocketConnectMsg.
+    If the attempt to make the connection secure fails, the application should call @ref close().
+
+@param[in]  sock
+                Socket ID, corresponding to a connected TCP socket.
+
+@pre
+    @ref socket and @ref connect must be called to connect a TCP socket before passing the socket ID to this function.
+    Value @ref SOCKET_CONFIG_SSL_DELAY must have been set in the u8Config parameter that was passed to @ref socket.
+
+@see
+    socket
+    connect
+
+@return
+    The function returns SOCK_ERR_NO_ERROR for successful operations and a negative error value otherwise.
+    The possible error values are:
+    - @ref SOCK_ERR_INVALID_ARG
+        Indicating passing invalid arguments such as negative socket ID.
+
+    - @ref SOCK_ERR_INVALID
+        Indicating failure to process the request.
+*/
+sint8 secure(SOCKET sock);
 /*!
 @fn \
     NMI_API sint16 recv(SOCKET sock, void *pvRecvBuf, uint16 u16BufLen, uint32 u32Timeoutmsec);
@@ -1914,7 +2026,7 @@ NMI_API sint8 m2m_ping_req(uint32 u32DstIP, uint8 u8TTL, tpfPingCb fpPingCb);
  *
  *  This function sets the protocol list used for application-layer protocol negotiation (ALPN).
  *  If used, it must be called after creating a SSL socket (using @ref socket) and before
- *  connecting/binding (using @ref connect or @ref bind).
+ *  connecting/binding (using @ref connect or @ref bind) or securing (using @ref secure).
  *
  * @param[in]   sock
  *                  Socket ID obtained by a call to @ref socket. This is the SSL socket to which
@@ -1940,7 +2052,7 @@ NMI_API sint8 m2m_ping_req(uint32 u32DstIP, uint8 u8TTL, tpfPingCb fpPingCb);
 
  * \subsection sub5 Main Function
  * @code
- *  SOCKET TcpClientSocket = socket(AF_INET, SOCK_STREAM, SOCKET_FLAGS_SSL);
+ *  SOCKET TcpClientSocket = socket(AF_INET, SOCK_STREAM, SOCKET_CONFIG_SSL_ON);
  *  if (TcpClientSocket >= 0)
  *  {
  *      struct sockaddr_in Serv_Addr = {

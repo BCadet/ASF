@@ -4,7 +4,7 @@
  *
  * \brief Atmel Wifi Provisioning API for Applications
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -169,13 +169,13 @@ at_ble_status_t wifiprov_wifi_con_update(uint8_t con_state);
 /** @brief Configure provisioning.
  *
  * @param[in] localname    must be a null terminated string
+ * @param[in] lauthtype    auth type to be used for provisioning
  *
  * @return @ref AT_BLE_SUCCESS
  * @return @ref AT_BLE_FAILURE
  *
  */
-at_ble_status_t wifiprov_configure_provisioning(uint8_t* localname);
-
+at_ble_status_t wifiprov_configure_provisioning(uint8_t* localname, at_ble_auth_t lauthtype);
 
 /** @brief Create provisioning database.
  *

@@ -783,6 +783,15 @@ void BM_APPLICATION_PairPassKeyEntryCompletePkt(BM_APPLICATION_CMDPKT* applicati
  */
 void BM_APPLICATION_PairYesNoConfirmPkt(BM_APPLICATION_CMDPKT* applicationCmdPkt, uint8_t connectionHandle, bool confirm);
 
+/*! \fn void BM_APPLICATION_ServerReadService(BM_APPLICATION_CMDPKT* applicationCmdPkt, uint8_t length)
+ *  \brief Reads the GATT-Server service.
+ *  \param applicationCmdPkt Handle to the application mode configuration library created by init function.
+ *  \param  pointer that holds the service uuid
+ *  \return None.
+ */
+void BM_APPLICATION_ServerReadService(BM_APPLICATION_CMDPKT* applicationCmdPkt, uint8_t *service_uuid_16);
+
+
 /*! \fn void BM_APPLICATION_ServerCreateService(BM_APPLICATION_CMDPKT* applicationCmdPkt, uint8_t *service, uint8_t length)
  *  \brief Builds an application mode command packet for creating GATT-Server service.
  *  \param applicationCmdPkt Handle to the application mode configuration library created by init function.

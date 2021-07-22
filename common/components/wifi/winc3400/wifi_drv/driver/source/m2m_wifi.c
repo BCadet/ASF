@@ -4,7 +4,7 @@
  *
  * \brief This module contains M2M Wi-Fi APIs implementation.
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -221,7 +221,9 @@ static void m2m_wifi_cb(uint8 u8OpCode, uint16 u16DataSize, uint32 u32Addr)
             uint16 u16BleMsgLen = (rx_buf[1] << 8) + rx_buf[0];
             tstrM2mBleApiMsg *bleRx = (tstrM2mBleApiMsg *)malloc(u16BleMsgLen + sizeof(tstrM2mBleApiMsg));
 
-            if(bleRx != NULL)
+            if(bleRx == NULL)
+                M2M_ERR("No Mem for BLE msg");
+            else
             {
                 bleRx->u16Len = u16BleMsgLen;
 
@@ -739,7 +741,7 @@ sint8 m2m_wifi_connect_wep(
         {
             tstrM2mWifiWep  *pstrWep = (tstrM2mWifiWep *)malloc(sizeof(tstrM2mWifiWep));
             if(pstrWep == NULL)
-                ret = M2M_ERR_FAIL;
+                ret = M2M_ERR_MEM_ALLOC;
             else
             {
                 pstrWep->u8KeyIndex = pstrAuthWep->u8KeyIndx - 1;
@@ -794,7 +796,7 @@ sint8 m2m_wifi_connect_psk(
         {
             tstrM2mWifiPsk  *pstrPsk = (tstrM2mWifiPsk *)malloc(sizeof(tstrM2mWifiPsk));
             if(pstrPsk == NULL)
-                ret = M2M_ERR_FAIL;
+                ret = M2M_ERR_MEM_ALLOC;
             else
             {
                 m2m_memset((uint8 *)pstrPsk, 0, sizeof(tstrM2mWifiPsk));
@@ -1006,7 +1008,9 @@ sint8 m2m_wifi_connect_1x_mschap2(
             if(ret == M2M_SUCCESS)
             {
                 tstrM2mWifi1xHdr    *pstr1xHdr = (tstrM2mWifi1xHdr *)malloc(u16AuthSize);
-                if(pstr1xHdr != NULL)
+                if(pstr1xHdr == NULL)
+                    ret = M2M_ERR_MEM_ALLOC;
+                else
                 {
                     uint8   *pu8AuthPtr = pstr1xHdr->au81xAuthDetails;
                     m2m_memset((uint8 *)pstr1xHdr, 0, u16AuthSize);
@@ -1087,7 +1091,9 @@ sint8 m2m_wifi_connect_1x_tls(
             {
                 uint16              u16Payload1Size = u16AuthSize - pstrAuth1xTls->u16CertificateLen;
                 tstrM2mWifi1xHdr    *pstr1xHdr = (tstrM2mWifi1xHdr *)malloc(u16Payload1Size);
-                if(pstr1xHdr != NULL)
+                if(pstr1xHdr == NULL)
+                    ret = M2M_ERR_MEM_ALLOC;
+                else
                 {
                     tstrM2mWifiAuthInfoHdr strInfoHdr = {0};
 
@@ -1282,6 +1288,28 @@ sint8 m2m_wifi_set_scan_options(tstrM2MScanOption *ptstrM2MScanOption)
     return s8Ret;
 }
 
+sint8 m2m_wifi_set_stop_scan_on_first(uint8 u8StopScanOption)
+{
+    sint8   s8Ret = M2M_ERR_FAIL;
+
+    tstrM2MStopScanOption StopScanOption = { 0 };
+
+    if(1 >= u8StopScanOption)
+    {
+        StopScanOption.u8StopOnFirstResult = u8StopScanOption;
+
+        s8Ret = hif_send(M2M_REQ_GROUP_WIFI, M2M_WIFI_REQ_SET_STOP_SCAN_OPTION, (uint8 *)&StopScanOption, sizeof(tstrM2MStopScanOption), NULL, 0, 0);
+
+        M2M_INFO("Scan will %s stop on first result.\n", StopScanOption.u8StopOnFirstResult ? "" : "NOT");
+    }
+    else
+    {
+        s8Ret = M2M_ERR_INVALID_ARG;
+    }
+
+    return s8Ret;
+}
+
 sint8 m2m_wifi_set_scan_region(uint16  ScanRegion)
 {
     sint8   s8Ret = M2M_ERR_FAIL;
@@ -1326,6 +1354,34 @@ sint8 m2m_wifi_request_scan_passive(uint8 ch)
     return s8Ret;
 }
 
+sint8 m2m_wifi_request_scan_ssid_list(uint8 ch, uint8 *u8Ssidlist)
+{
+    sint8   s8Ret = M2M_ERR_INVALID_ARG;
+
+    if((((ch >= M2M_WIFI_CH_1) && (ch <= M2M_WIFI_CH_14)) || (ch == M2M_WIFI_CH_ALL))&&(u8Ssidlist != NULL))
+    {
+        tstrM2MScan strtmp;
+        uint16 u16Lsize = 0;
+        uint8 u8Apnum = u8Ssidlist[u16Lsize];
+        if(u8Apnum <= MAX_HIDDEN_SITES)
+        {
+            u16Lsize++;
+            while(u8Apnum)
+            {
+                if(u8Ssidlist[u16Lsize] >= M2M_MAX_SSID_LEN) {
+                    goto EXIT;
+                } else {
+                    u16Lsize += u8Ssidlist[u16Lsize] + 1;
+                    u8Apnum--;
+                }
+            }
+            strtmp.u8ChNum = ch;
+            s8Ret = hif_send(M2M_REQ_GROUP_WIFI, M2M_WIFI_REQ_SCAN_SSID_LIST|M2M_REQ_DATA_PKT, (uint8 *)&strtmp, sizeof(tstrM2MScan), u8Ssidlist, u16Lsize, sizeof(tstrM2MScan));
+        }
+    }
+EXIT:
+    return s8Ret;
+}
 sint8 m2m_wifi_wps(uint8 u8TriggerType, const char  *pcPinNumber)
 {
     tstrM2MWPSConnect strtmp;
@@ -1875,7 +1931,8 @@ sint8 m2m_wifi_enable_sntp(uint8 bEnable)
 
 /*!
 @fn         NMI_API sint8 m2m_wifi_set_power_profile(uint8 u8PwrMode);
-@brief      Change the power profile mode
+@brief      Change the power profile mode\n
+            Not implemented in WINC3400 firmware.
 @param [in] u8PwrMode
             Change the WINC power profile to different mode
             PWR_LOW1/PWR_LOW2/PWR_HIGH/PWR_AUTO (tenuM2mPwrMode)
@@ -1933,13 +1990,15 @@ sint8 m2m_wifi_enable_firmware_logs(uint8 u8Enable)
 }
 
 /*!
-@fn         sint8 m2m_wifi_set_battery_voltage(uint16 u16BattVoltx100);
-@brief      Set the battery voltage to update the firmware calculations.
+@fn         NMI_API sint8 m2m_wifi_set_battery_voltage(uint16 u16BattVoltx100);
+@brief      Set the battery voltage to update the firmware calculations. \n
+            Not implemented in WINC3400 firmware.
 @param [in] u16BattVoltx100
-            Battery voltage as double (multiplied by 100).
-@return     The function returns @ref M2M_SUCCESS for success and a negative value otherwise.
+            battery voltage multiplied by 100
+@return     The function SHALL return @ref M2M_SUCCESS for success and a negative value otherwise.
+@sa         __DISABLE_FIRMWARE_LOGS__ (build option to disable logs from initializations)
 @pre        m2m_wifi_init
-@warning    This is not supported in the current release.
+@warning
 */
 sint8 m2m_wifi_set_battery_voltage(uint16 u16BattVoltx100)
 {

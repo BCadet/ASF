@@ -1373,6 +1373,17 @@ void ble_event_cb_handler(bm_cmd_frame_t *bm_cmd);
 uint8_t interface_process_fifo_data(void);
 
 /*
+ * @brief Read GATT-Service
+ *
+ * @param[in] GATT-Service parameters
+ *
+ * @pre 
+ *
+ * @return Upon successful completion of the function shall return @ref BLE_SUCCESS, otherwise it shall return @ref ble_status_t
+*/
+ble_status_t ble_gatt_service_read(ble_service_t *ble_service);
+
+/*
  * @brief Create GATT-Service
  *
  * @param[in] GATT-Service parameters

@@ -4,7 +4,7 @@
  *
  * \brief This module contains M2M host interface APIs implementation.
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -108,6 +108,10 @@ extern void os_hook_isr(void);
 #define HIFCODE_WIFI_START_PROV_MODE ((M2M_REQ_GROUP_WIFI << 8) | M2M_WIFI_REQ_START_PROVISION_MODE)
 #define HIFCODE_WIFI_ENABLE_AP      ((M2M_REQ_GROUP_WIFI << 8) | M2M_WIFI_REQ_ENABLE_AP)
 #define HIFCODE_IP_RAW_SOCK_OPT     ((M2M_REQ_GROUP_IP << 8)   | SOCKET_CMD_RAW_SET_SOCK_OPT)
+#define HIFCODE_WIFI_ROAMING        ((M2M_REQ_GROUP_WIFI << 8) | M2M_WIFI_REQ_ROAMING)
+#define HIFCODE_IP_SECURE           ((M2M_REQ_GROUP_IP << 8)   | SOCKET_CMD_SECURE)
+#define HIFCODE_WIFI_SCAN_SSID_LIST         ((M2M_REQ_GROUP_WIFI << 8) | M2M_WIFI_REQ_SCAN_SSID_LIST)
+#define HIFCODE_WIFI_SET_STOP_SCAN_OPTION   ((M2M_REQ_GROUP_WIFI << 8) | M2M_WIFI_REQ_SET_STOP_SCAN_OPTION)
 
 /*
     List of new HIF messages (since last HIF major increase).
@@ -123,7 +127,11 @@ extern void os_hook_isr(void);
     HIFCODE_WIFI_DELETE_CRED, \
     HIFCODE_WIFI_START_PROV_MODE, \
     HIFCODE_WIFI_ENABLE_AP, \
-    HIFCODE_IP_RAW_SOCK_OPT
+    HIFCODE_IP_RAW_SOCK_OPT, \
+    HIFCODE_WIFI_ROAMING, \
+    HIFCODE_IP_SECURE, \
+    HIFCODE_WIFI_SCAN_SSID_LIST, \
+    HIFCODE_WIFI_SET_STOP_SCAN_OPTION
 /*
     Array of HIF messages which are not supported by Firmware.
     During hif_init() this array is rebased using an offset determined by Firmware HIF level.
@@ -368,7 +376,10 @@ sint8 hif_enable_access(void)
                 gu8HifBlOffset = 3;
                 break;
             case 4:
-                gu8HifBlOffset = 9;
+                gu8HifBlOffset = 10;
+                break;
+            case 5:
+                gu8HifBlOffset = 13;
                 break;
             // Additional case to be added each time hif minor increments.
             // All additional cases to be removed in the event of a hif major increment.
@@ -575,7 +586,7 @@ sint8 hif_send(uint8 u8Gid, uint8 u8Opcode, uint8 *pu8CtrlBuf, uint16 u16CtrlBuf
             else
             {
                 ret = hif_chip_sleep();
-                M2M_INFO("Failed to alloc rx size\n");
+                M2M_DBG("Failed to alloc rx size\n");
                 ret =  M2M_ERR_MEM_ALLOC;
                 goto ERR2;
             }
@@ -841,10 +852,13 @@ sint8 hif_receive(uint32 u32Addr, uint8 *pu8Buf, uint16 u16Sz, uint8 isDone)
     if(ret != M2M_SUCCESS)goto ERR1;
 
     /* check if this is the last packet */
-    if(isDone || (((gstrHifCxt.u32RxAddr+gstrHifCxt.u32RxSize) - (u32Addr+u16Sz)) <= 0) ||
-            ((4 - ((u32Addr+u16Sz) & 3)) == ((gstrHifCxt.u32RxAddr+gstrHifCxt.u32RxSize) - (u32Addr+u16Sz))))   /* Length in the RCV CTRL 0 register is rounded off to 4 by the firmware,
-                                                                                   but length inside the HIF header is not, Hence consider done if number
-                                                                                   of rounding bytes equal to length left to read */
+    if(
+            isDone
+        ||  (((gstrHifCxt.u32RxAddr+gstrHifCxt.u32RxSize) - (u32Addr+u16Sz)) <= 3)
+        /* Length in the RCV CTRL 0 register is rounded off to 4 by the firmware,
+        but length inside the HIF header is not, hence consider done if fewer than
+        4 bytes left to read */
+    )
     {
         /* set RX done */
         ret = hif_set_rx_done();

@@ -4,7 +4,7 @@
  *
  * \brief WINC3400 IoT Application Interface Internal Types.
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -135,7 +135,7 @@ MACROS
 #define M2M_HIF_MAJOR_VALUE                             (1)
 /*!< Drv/Fw major compatibility check.
 */
-#define M2M_HIF_MINOR_VALUE                             (4)
+#define M2M_HIF_MINOR_VALUE                             (5)
 /*!< Drv/Fw minor compatibility check.
 */
 
@@ -165,10 +165,10 @@ MACROS
   DRIVER VERSION NO INFO
  *======*======*======*======*/
 
-#define M2M_DRIVER_VERSION_MAJOR_NO 					(1)
+#define M2M_DRIVER_VERSION_MAJOR_NO                     (1)
 /*!< Driver Major release version number.
 */
-#define M2M_DRIVER_VERSION_MINOR_NO                     (1)
+#define M2M_DRIVER_VERSION_MINOR_NO                     (2)
 /*!< Driver Minor release version number.
 */
 #define M2M_DRIVER_VERSION_PATCH_NO                     (0)
@@ -231,6 +231,10 @@ MACROS
     from the AP.
 */
 
+#define MAX_HIDDEN_SITES                                4
+/*!<
+    max number of hidden SSID supported by scan request
+*/
 
 #define M2M_CUST_IE_LEN_MAX                             252
 /*!< The maximum size of IE (Information Element).
@@ -471,7 +475,7 @@ typedef enum {
     M2M_REQ_GROUP_OTA,
     M2M_REQ_GROUP_SSL,
     M2M_REQ_GROUP_SIGMA,
-    M2M_REQ_GROUP_INTERNAL
+    M2M_REQ_GROUP_INTERNAL,
 } tenuM2mReqGroup;
 
 /*!
@@ -822,6 +826,13 @@ typedef enum {
     /*!< Request to enable/disable wifi roaming.
         (Processing matches @ref tenuM2mConfigCmd.)
      */
+    M2M_WIFI_REQ_SCAN_SSID_LIST,
+    /*!< Request scan with list of hidden SSID plus the broadcast scan.
+    */
+    M2M_WIFI_REQ_SET_STOP_SCAN_OPTION,
+    /*!< Set Scan option to stop on first result.
+        (Processing matches @ref tenuM2mConfigCmd.)
+    */
     M2M_WIFI_MAX_GEN_ALL
 } tenuM2mGenCmd;
 
@@ -1601,7 +1612,9 @@ typedef struct {
          Default setting is @ref M2M_SCAN_DEFAULT_SLOT_TIME.
     */
     uint8   u8ProbesPerSlot;
-    /*!< Number of probe requests to be sent each scan slot. Refers to active scan only.
+    /*!< Number of probe requests to be sent for each scan slot (when not specifying network to scan).
+         Number of probe requests to be sent for each ssid to scan in each scan slot (when specifying network to scan).
+         Refers to active scan only.
          Valid settings are in the range 0<Probes<=2.
          Default setting is @ref M2M_SCAN_DEFAULT_NUM_PROBE.
     */
@@ -1619,9 +1632,32 @@ typedef struct {
          Valid settings are in the range 10<=PassiveScanTime<=1200.
          Default setting is @ref M2M_SCAN_DEFAULT_PASSIVE_SLOT_TIME.
     */
-    uint8   __PAD16__[2];
+    uint8 __PAD16__[2];
     /*!< Padding bytes for forcing 4-byte alignment */
 } tstrM2MScanOption;
+
+
+/*!
+@struct \
+    tstrM2MStopScanOption
+
+@brief  This struct holds additional configuration options for Wi-Fi scan.
+
+        These scan options should be set by the application prior to issuing the scan request, and once configured,
+        WINC will keep the settings until the scan options are set again, via the same API, or until the device is
+        either reset or power cycled.
+*/
+typedef struct {
+    uint8                       u8StopOnFirstResult;
+    /*!<
+        Stop scan as soon as an SSID is detected.
+        1 = Enabled, 0 = Disabled (default)
+    */
+
+    uint8                       au8Rsv[3];
+    /*!< Reserved for future use. Set to 0. */
+
+} tstrM2MStopScanOption;
 
 /*!
 @struct \
@@ -2350,14 +2386,21 @@ typedef struct {
 */
 typedef enum {
     M2M_SSL_REQ_CERT_VERIF,
+    /*!< For internal use only during RSA signature verification. */
     M2M_SSL_REQ_ECC,
+    /*!< Request from WINC for an elliptic curve operation. */
     M2M_SSL_RESP_ECC,
+    /*!< Response to WINC with the result of an elliptic curve operation. */
     M2M_SSL_RSV,
+    /*!< Reserved. */
     M2M_SSL_REQ_WRITE_OWN_CERTS,
+    /*!< Request to WINC with local certificates to write into WINC flash. */
     M2M_SSL_REQ_SET_CS_LIST,
+    /*!< Request to WINC to set the list of ciphersuites to be globally enabled. */
     M2M_SSL_RESP_SET_CS_LIST,
-    M2M_SSL_RESP_WRITE_OWN_CERTS,
-    M2M_SSL_REQ_SET_CERT_VERIF_MODE
+    /*!< Response from WINC with the list of ciphersuites that are globally enabled. */
+    M2M_SSL_RESP_WRITE_OWN_CERTS
+    /*!< Response from WINC to indicate that local certificates have been written into WINC flash. */
 } tenuM2mSslCmd;
 
 /*!

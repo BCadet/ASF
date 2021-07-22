@@ -4,7 +4,7 @@
  *
  * \brief WINC3400 TCP Server Example.
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2020-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -73,6 +73,8 @@
  *    wifi_cb: M2M_WIFI_REQ_DHCP_CONF: IP is xxx.xxx.xxx.xxx
  *    socket_cb: bind success!
  *    socket_cb: listen success!
+ * -# On the computer, run the tcp_client.py script to start the client.
+ * -# In the terminal window, the following text should appear:
  *    socket_cb: accept success!
  *    socket_cb: recv success!
  *    socket_cb: send success!

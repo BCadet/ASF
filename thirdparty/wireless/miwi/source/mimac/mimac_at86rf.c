@@ -285,7 +285,7 @@ uint8_t FrameControl)
 // Validates the Received mic with the mic computed from data packet decryption.
 bool validate_mic(void)
 {
-	if (final_mic_value[0] != received_mic_values[0] || final_mic_value[1] != received_mic_values[1])
+	if (final_mic_value[0] != received_mic_values[0] || final_mic_value[1] != received_mic_values[1] || final_mic_value[2] != received_mic_values[2] || final_mic_value[3] != received_mic_values[3])
 	{
 		return false;
 	}
@@ -1173,20 +1173,14 @@ bool MiMAC_ReceivedPacket(void)
 					break;
 				}
 			}
-
-			if (i < CONNECTION_SIZE)
-			{
-				if (IncomingFrameCounter[i].Val > FrameCounter.Val)
-				{
-					MiMAC_DiscardPacket();
-					return false;
-				} else
-				{
-					IncomingFrameCounter[i].Val = FrameCounter.Val;
-				}
-			}
-
-
+			
+            // drop the frame in case of replay
+            if (i < CONNECTION_SIZE && IncomingFrameCounter[i].Val >= FrameCounter.Val)
+            {
+                MiMAC_DiscardPacket();
+                return false;
+            }
+			
 			MACRxPacket.PayloadLen -= 5;  // used to 5 for frame counter now -4 also added for MIC integrity
 
 			received_mic_values[0] = MACRxPacket.Payload[MACRxPacket.PayloadLen+1];
@@ -1198,6 +1192,12 @@ bool MiMAC_ReceivedPacket(void)
 			{
 				MiMAC_DiscardPacket();
 				return false;
+			}
+			
+			// update the frame counter
+            if (i < CONNECTION_SIZE) 
+			{
+				IncomingFrameCounter[i].Val = FrameCounter.Val;
 			}
 
 			// remove the security header from the payload

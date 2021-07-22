@@ -4,7 +4,7 @@
  *
  * \brief SAMD21 WINC3400 configuration.
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -59,6 +59,7 @@ extern "C" {
 */
 
 #define CONF_WINC_USE_SPI				(1)
+//#define CONF_WINC_SPI_DMA
 
 /** SPI pin and instance settings. */
 #define CONF_WINC_SPI_MODULE			EXT1_SPI_MODULE
@@ -68,6 +69,12 @@ extern "C" {
 #define CONF_WINC_SPI_PINMUX_PAD2		EXT1_SPI_SERCOM_PINMUX_PAD2 /* out */
 #define CONF_WINC_SPI_PINMUX_PAD3		EXT1_SPI_SERCOM_PINMUX_PAD3 /* sck */
 #define CONF_WINC_SPI_CS_PIN			EXT1_PIN_SPI_SS_0
+
+#ifdef CONF_WINC_SPI_DMA
+/* When user enable CONF_WINC_SPI_DMA below configurations of DMA need to be enabled */
+#define CONF_WINC_SPI_DMA_PERIPHERAL_TRIGGER_TX     SERCOM0_DMAC_ID_TX
+#define CONF_WINC_SPI_DMA_PERIPHERAL_TRIGGER_RX     SERCOM0_DMAC_ID_RX
+#endif
 
 #define CONF_WINC_SPI_MISO				EXT1_PIN_SPI_MISO
 #define CONF_WINC_SPI_MOSI				EXT1_PIN_SPI_MOSI

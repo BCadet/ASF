@@ -1,6 +1,30 @@
 @ECHO Off
-
+pushd firmware
 set varPath=%PROGRAMFILES%
+set PythonVersion=C:\Python27
+set PATH=%PythonVersion%;%PATH%
+
+echo usage:
+echo   This program will program a WINC1500 Xplained card plugged into a SamW25XplainedPro card, so long as only one is present
+echo   It fills in defaults and calls more specific script files below.
+echo.
+
+echo Checking for Python support.
+where /q python.exe
+if %ERRORLEVEL%==1 GOTO NOPYTHON
+python --version > tmpFile 2>&1
+set /p myvar= < tmpFile 
+del tmpFile
+echo python version = %myvar%
+echo.%myvar% | FINDSTR /C:"2."
+echo error level = %ERRORLEVEL%
+if %ERRORLEVEL%==0 GOTO HASPYTHON
+:NOPYTHON
+echo This tool require Python v2.x. Kindly change the path of Python version details in the variable "PythonVersion" of bat file "samd21_xplained_pro_firmware_update.bat" .
+popd
+exit /b 2
+:HASPYTHON
+echo Python 2.x available
 
 :CheckOS
 IF EXIST "%PROGRAMFILES(X86)%" (GOTO 64BIT) ELSE (GOTO RUN)

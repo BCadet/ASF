@@ -4,7 +4,7 @@
  *
  * \brief WINC3400 UDP Client Example.
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2020-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -63,6 +63,7 @@
  *    Stop bit : 1bit
  *    Flow control : none
  * \endcode
+ * -# On the computer, run the udp_server.py script to start server.
  * -# Start the application.
  * -# In the terminal window, the following text should appear:
  * \code

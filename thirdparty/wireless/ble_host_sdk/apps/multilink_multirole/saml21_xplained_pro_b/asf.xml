@@ -1,5 +1,5 @@
 <asf xmlversion="1.0">
-	<project caption="Multilink-Multirole Sensor Application - SAM L21 Xplained Pro SAML21J18B" id="thirdparty.wireless.ble_host_sdk.apps.multilink_multirole.saml21_xplained_pro_b" force-caption="true" force-description="true" workspace-name="bm70_multilink_multirole_saml21_xplained_pro_b">
+	<project caption="BM70_71 Multilink-Multirole Sensor Application - SAM L21 Xplained Pro SAML21J18B" id="thirdparty.wireless.ble_host_sdk.apps.multilink_multirole.saml21_xplained_pro_b" force-caption="true" force-description="true" workspace-name="bm70_71_multilink_multirole_saml21_xplained_pro_b">
 		<info type="description" value="summary">
 		Multilink-Multirole Application for BLE Stack.
 		</info>	
@@ -19,6 +19,7 @@
 		<generator value="as5_arm" />
 		<generator value="doxygen"/>
 		<device-support value="atsaml21j18b"/>
-		<toolchain-config name="armgcc.compiler.miscellaneous.OtherFlags" value="-pipe -fno-strict-aliasing -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -std=gnu99 -ffunction-sections -fdata-sections -Wchar-subscripts -Wcomment -Wformat=2 -Wimplicit-int -Wmain -Wparentheses -Wsequence-point -Wreturn-type -Wswitch -Wtrigraphs -Wunused -Wuninitialized -Wunknown-pragmas -Wfloat-equal -Wundef -Wshadow -Wbad-function-cast -Wwrite-strings -Wsign-compare -Waggregate-return  -Wmissing-declarations -Wformat -Wmissing-format-attribute -Wno-deprecated-declarations -Wredundant-decls -Wnested-externs -Wlong-long -Wunreachable-code -Wcast-align --param max-inline-insns-single=500" toolchain="armgcc"/>
+		<toolchain-config name="armgcc.compiler.miscellaneous.OtherFlags" value="-pipe -O3 -fno-strict-aliasing -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -std=gnu99 -ffunction-sections -fdata-sections -Wchar-subscripts -Wcomment -Wformat=2 -Wimplicit-int -Wmain -Wparentheses -Wsequence-point -Wreturn-type -Wswitch -Wtrigraphs -Wunused -Wuninitialized -Wunknown-pragmas -Wfloat-equal -Wundef -Wshadow -Wbad-function-cast -Wwrite-strings -Wsign-compare -Waggregate-return  -Wmissing-declarations -Wformat -Wmissing-format-attribute -Wno-deprecated-declarations -Wredundant-decls -Wnested-externs -Wlong-long -Wunreachable-code -Wcast-align --param max-inline-insns-single=500" toolchain="armgcc"/>
+	    <config name="config.compiler.armgcc.optimization" value="high"/>
 	</project>
 </asf>

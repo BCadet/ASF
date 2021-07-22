@@ -4,7 +4,7 @@
  *
  * \brief WINC3400 locate IP address example
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2020-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -286,7 +286,7 @@ static void configure_http_client(void)
 
 	http_client_get_config_defaults(&httpc_conf);
 
-	httpc_conf.recv_buffer_size = 256;
+	httpc_conf.recv_buffer_size = 320;
 	httpc_conf.timer_inst = &swt_module_inst;
 	/* ipinfo.io send json format data if only client is a curl. */
 	httpc_conf.user_agent = "curl/7.10.6";

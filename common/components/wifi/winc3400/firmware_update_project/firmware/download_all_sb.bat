@@ -2,12 +2,12 @@
 setlocal  EnableDelayedExpansion
 
 if /I a%1a==aa (
-	echo Usage egs:
-	echo   download_all_sb
-	echo       edbg
+	echo Usage egs: 
+	echo   download_all_sb 
+	echo       edbg 
 	echo       [mcu eg ATSAMD21J18A]
 	echo       [path to at cmd app or serial bridge elf file]
-	echo       [3400]
+	echo       [3A0 or 3400]
 	echo       [SamD2x SNo [eg ATML2130021800006127] or 0]
 	echo       [com port or 0]
 )
@@ -21,11 +21,14 @@ set PRTIN=%6
 set varPath=%PROGRAMFILES%
 
 set TGTCHIP=xx
+if /I a%TGTIN%a==a3A0a (
+  set TGTCHIP=3A0
+)
 if /I a%TGTIN%a==a3400a (
   set TGTCHIP=3400
 )
 if /I %TGTCHIP%==xx (
-  echo Need to specify target chip 3400
+  echo Need to specify target chip 3400 or 3A0
   goto failout
 )
 
@@ -53,20 +56,20 @@ if a%PRTIN%a==aa (
 :gotparms
 
 echo Checking for Python support.
-where /q python.exe
-if ERRORLEVEL 1 GOTO NOPYTHON
-goto :HASPYTHON
+where /q python.exe 
+if ERRORLEVEL 1 GOTO NOPYTHON  
+goto :HASPYTHON  
 :NOPYTHON
 echo Require Python v2.7
 exit /b 2
-:HASPYTHON
+:HASPYTHON 
 echo OK
 echo.
 
 Echo Checking Atmel Studio Installation
 python handler_search.py atsln atmelstudio > atmelstudiopath.txt
-if ERRORLEVEL 1 GOTO NOAS2
-goto :HASAS2
+if ERRORLEVEL 1 GOTO NOAS2  
+goto :HASAS2  
 :NOAS2
 echo Require Atmel Studio v7.0
 exit /b 2
@@ -77,7 +80,7 @@ For %%A in (%ASFULLPATH%) do (
     Set ASPATH=%%~dpA
     Set ASEXE=%%~nxA
 )
-echo Found: %ASPATH%%ASEXE%
+echo Found: %ASPATH%%ASEXE%  
 echo.
 set atprogram="%ASPATH%atbackend\atprogram.exe"
 
@@ -94,13 +97,14 @@ echo Calling...
 echo %atprogram% -t %TOOL% %TOOLSN% -i SWD -d %MCU% chiperase
 echo %atprogram% -t %TOOL% %TOOLSN% -i SWD -d %MCU% program ^^
 echo     -f %IMAGE_FILE%
-REM echo %atprogram% -t %TOOL% %TOOLSN% -i SWD -d %MCU% reset
+echo %atprogram% -t %TOOL% %TOOLSN% -i SWD -d %MCU% reset
 echo download_all.bat UART %GAIN_MODE% %TGTCHIP% %AARDVARKSN% %PRGPORTNUM%
 echo.
 
 rem ######## Program loop #########################################################
 FOR /L %%H IN (1,1,5) DO (
 	echo ** Programming attempt %%H of 5...
+
 	echo Erasing host...
 	%atprogram% -t %TOOL% %TOOLSN% -i SWD -d %MCU% chiperase
 	PING 127.0.0.1 -n 5 >NUL
@@ -115,14 +119,10 @@ FOR /L %%H IN (1,1,5) DO (
 		echo Setting Boot from Flash...
 		%atprogram% -t %TOOL% %TOOLSN% -i SWD -d %MCU% write -fs -o 0 --values 0x02
 	)
-	if a%MCU%a==aATSAME70Q21a (
-		echo Setting Boot from Flash...
-		%atprogram% -t %TOOL% %TOOLSN% -i SWD -d %MCU% write -fs -o 0 --values 0x42
-	)
 	PING 127.0.0.1 -n 5 >NUL
 	echo Resetting host...
 	%atprogram% -t %TOOL% %TOOLSN% -i SWD -d %MCU% reset
-	PING 127.0.0.1 -n 5 >NUL
+	PING 127.0.0.1 -n 2 >NUL
 
 	echo Verifying com port was enumerated...
 	call test_edbg.cmd comport.txt
@@ -131,16 +131,14 @@ FOR /L %%H IN (1,1,5) DO (
 		%atprogram% -t %TOOL% %TOOLSN% -i SWD -d %MCU% reset
 		PING 127.0.0.1 -n 2 >NUL
 	)
-
+	
 	if %PRGPORTNUM% EQU 0 (
 		set /p PRGPORTNUM=<comport.txt
 		echo Setting port number to !PRGPORTNUM!
 	)
-    echo Launch dir: "%~dp0"
-    echo Current dir: "%CD%"
+
 	echo Downloading FW...
 	echo call download_all.bat UART %TGTCHIP% 0 !PRGPORTNUM!
-	PING 127.0.0.1 -n 5 >NUL
 	call download_all.bat UART %TGTCHIP% 0 !PRGPORTNUM! && goto okout
 )
 
@@ -179,6 +177,6 @@ echo     ##                    ##       #########   ##   ##                   ##
 echo     ##                    ##       ##     ##   ##   ##                   ##
 echo     ##                    ##       ##     ##  ####  ########             ##
 echo     ##                                                                   ##
-echo     #######################################################################
+echo     #######################################################################  
 exit /b 1
 )

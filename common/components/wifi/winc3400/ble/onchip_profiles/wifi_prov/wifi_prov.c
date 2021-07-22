@@ -3,7 +3,7 @@
  *
  * \brief WiFi Provisioning Implementations
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -48,7 +48,7 @@ static uint8_t provision_state = 0;
 static uint8_t provision_app_handle_ble_events(void);
 static void init_credentials(void);
 static void update_credentials(credentials new_creds);
-
+	
 static void init_credentials(void)
 {
 	M2M_INFO("Reset provision data");
@@ -135,7 +135,7 @@ uint8_t ble_prov_get_credentials(credentials *cred)
 {
 	uint8_t valid = CREDENTIALS_VALID;
 	M2M_INFO("Retrieving ssid...\n");
-
+	
 	if (provisioned_credentials.ssid_length == 0)
 	{
 		M2M_INFO("   no valid ssid");
@@ -147,8 +147,8 @@ uint8_t ble_prov_get_credentials(credentials *cred)
 		cred->sec_type = provisioned_credentials.sec_type;
 		cred->ssid_length = provisioned_credentials.ssid_length;
 		memcpy(cred->ssid,provisioned_credentials.ssid, MAX_WIPROVTASK_SSID_LENGTH);
-
-		cred->passphrase_length = provisioned_credentials.passphrase_length;
+		
+		cred->passphrase_length = provisioned_credentials.passphrase_length;		
 		if (cred->sec_type == M2M_WIFI_SEC_WEP)
 		{
 			// Convert WEP passphrase for m2m_wifi_connect friendly format.
@@ -192,16 +192,16 @@ void ble_prov_stop(void)
 		wifiprov_disable();
 		wifiprov_complete_ind.status = WIFI_PROV_IDLE;
 	}
-	provision_state = BLE_PROV_STATE_IDLE;
+	provision_state = BLE_PROV_STATE_IDLE;	
 }
 
-void ble_prov_init(uint8_t* localname)
+void ble_prov_init(uint8_t* localname, at_ble_auth_t lauthtype)
 {
 	provision_state = BLE_PROV_STATE_IDLE;
 	init_credentials();
-
+	
 	// Setup the provisioning service
-	if(AT_BLE_SUCCESS != wifiprov_configure_provisioning(localname))
+	if(AT_BLE_SUCCESS != wifiprov_configure_provisioning(localname, lauthtype ))
 	{
 		M2M_ERR("Failed to configure BLE provisioning \n");
 		return;
@@ -224,7 +224,7 @@ void ble_prov_scan_result(tstrM2mWifiscanResult* pstrScanResult, uint8_t results
 		memcpy(ble_scan_list.scandetails[index].ssid, pstrScanResult->au8SSID, sizeof(ble_scan_list.scandetails[index].ssid));
 		ble_scan_list.num_valid++;
 	}
-
+	
 	if (resultsRemaining==0)
 	{
 		wifiprov_scan_list_ind_send(&ble_scan_list);

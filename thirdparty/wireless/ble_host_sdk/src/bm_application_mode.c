@@ -790,6 +790,17 @@ void BM_APPLICATION_ServerCreateService(BM_APPLICATION_CMDPKT* applicationCmdPkt
 	BM_APPLICATION_CmdPkt(applicationCmdPkt, &appCmd, payload);
 }
 
+void BM_APPLICATION_ServerReadService(BM_APPLICATION_CMDPKT* applicationCmdPkt, uint8_t *service_uuid_16)
+{
+    BM_APPLICATION_CMD appCmd = BM_APPLICATION_MODE_CMD(BM_SERVER_SERVICE_READ_INDEX);
+    uint8_t payload[BM_APPLICATION_MODE_CMD_LEN(BM_SERVER_SERVICE_READ_INDEX)];
+    
+    /* Total number of attribute in this service */
+    memcpy(&payload[0], service_uuid_16, 16);
+    appCmd.length = sizeof(payload);
+    BM_APPLICATION_CmdPkt(applicationCmdPkt, &appCmd, payload);
+}
+
 void BM_Application_EventParser(BM_APPLICATION_EVENT_OPCODE event_id, void *data, uint32_t *dataLen)
 {
 	switch(event_id)

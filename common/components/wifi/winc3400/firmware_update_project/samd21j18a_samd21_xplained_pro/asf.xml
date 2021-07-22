@@ -1,5 +1,5 @@
 <asf xmlversion="1.0">
-	<project caption="WINC3400 Firmware Update Project (v1.3.1) - SAMD21 XPlained Pro" id="common.components.wifi.winc3400.firmware_update_project.samd21_xplained_pro" force-caption="true" force-description="true">
+	<project caption="WINC3400 Firmware Update Project (v1.4.2) - SAMD21 XPlained Pro" id="common.components.wifi.winc3400.firmware_update_project.samd21_xplained_pro" force-caption="true" force-description="true">
 		<!-- Summary Description -->
 		<info type="description" value="summary">
 			This project includes tools and documentation to update the WINC3400 Wi-Fi module firmware, root certificates and gain values.

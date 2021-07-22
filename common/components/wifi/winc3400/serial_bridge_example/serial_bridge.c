@@ -4,7 +4,7 @@
  *
  * \brief Serial Bridge.
  *
- * Copyright (c) 2018-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2020-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -364,9 +364,10 @@ int main (void)
     }
 
 	/* Initialize WINC driver. */
-	ret = m2m_wifi_init(&gstrWifiParam);
+	//ret = m2m_wifi_init(&gstrWifiParam); //If the WINC flash is empty "m2m_wifi_init" fails.
+	ret = m2m_wifi_download_mode();
 	if(ret != M2M_SUCCESS) {
-		M2M_ERR("\r\nFailed to initialize WINC driver.");
+		M2M_ERR("\r\nFailed to prepare the WINC before downloading any data..");
 		goto HALT;
 	}
 

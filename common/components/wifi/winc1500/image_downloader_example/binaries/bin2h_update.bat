@@ -22,7 +22,7 @@ IF NOT EXIST "%fwPath%" (
 echo.
 echo Generating header files...
 echo.
-bin2h.exe %fwPath%\m2m_aio_3a0.bin m2m_aio_3a0.h winc_fw
+bin2h.exe %fwPath%\m2m_image_3A0.aoi m2m_aio_3a0.h winc_fw
 echo.
 echo Done.
 pause

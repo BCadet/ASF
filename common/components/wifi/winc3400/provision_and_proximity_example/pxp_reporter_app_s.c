@@ -3,7 +3,7 @@
  *
  * \brief Proximity Reporter Profile Application Implementations
  *
- * Copyright (c) 2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -454,7 +454,7 @@ static void app_ble_wifi_provisioning(void)
 
 	// Initialize BLE stack on 3400.
 	m2m_ble_init();
-	ble_prov_init(display_name);
+	ble_prov_init((uint8_t *)display_name,AT_BLE_AUTH_NO_MITM_NO_BOND);
 
 	//M2M_INFO("Hold SW0 for 2 sec to start provisioning.\r\n");
 

@@ -1,6 +1,6 @@
 /*******************************************************************************
 Copyright (c) RivieraWaves 2009-2014
-Copyright (c) 2017 released Microchip Technology Inc. All rights reserved.
+Copyright (c) 2021 released Microchip Technology Inc. All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -365,6 +365,8 @@ at_ble_status_t gapm_adv_report_evt_handler(uint8_t* data, at_ble_scan_info_t* p
     INTERFACE_UNPACK_BLOCK(param->dev_addr.addr, AT_BLE_ADDR_LEN);
     INTERFACE_UNPACK_UINT8(&(param->adv_data_len));
     INTERFACE_UNPACK_BLOCK(param->adv_data ,param->adv_data_len);
+    INTERFACE_UNPACK_SKIP((AT_BLE_ADV_MAX_SIZE-param->adv_data_len));
+    INTERFACE_UNPACK_UINT8(&(param->rssi));
     INTERFACE_UNPACK_DONE();
 
     param->dev_addr.type = gapm_get_address_type((uint8_t *)(&(param->dev_addr.addr)), param->dev_addr.type);

@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2017 released Microchip Technology Inc. All rights reserved.
+Copyright (c) 2021 released Microchip Technology Inc. All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -163,7 +163,7 @@ enum
  * @return @ref AT_BLE_FAILURE
  *
  */
-at_ble_status_t wifiprov_configure_provisioning(uint8_t* localname);
+at_ble_status_t wifiprov_configure_provisioning(uint8_t* localname, at_ble_auth_t lauthtype);
 
 /** @brief Create provisioning database.
  *

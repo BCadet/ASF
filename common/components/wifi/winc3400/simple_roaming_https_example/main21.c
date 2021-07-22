@@ -4,7 +4,7 @@
  *
  * \brief WINC3400 Simple Roaming HTTPS Example.
  *
- * Copyright (c) 2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -71,6 +71,8 @@
  *    -- Compiled: xxx xx xxxx xx:xx:xx --
  *    wifi_cb: M2M_WIFI_RESP_CON_STATE_CHANGED: CONNECTED
  *    wifi_cb: M2M_WIFI_REQ_DHCP_CONF: IP is xxx.xxx.xxx.xxx
+ * -# On the computer, run the server.py script to start server.
+ * -# In the terminal window, the following text should appear:
  *    socket_cb: connect success!
  *    Received - xxx xxx xx xx:xx:xx xxxx
  *    Data sent from client -> server!

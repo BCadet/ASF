@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2017 released Microchip Technology Inc. All rights reserved.
+Copyright (c) 2021 released Microchip Technology Inc. All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -36,10 +36,10 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
  *
  *
  */
-at_ble_status_t wifiprov_configure_provisioning(uint8_t* lname)
+at_ble_status_t wifiprov_configure_provisioning(uint8_t* lname, at_ble_auth_t lauthtype)
 {
-    //TODO: check on platform error
-    uint8_t lname_len = 0;
+	//TODO: check on platform error
+	uint8_t lname_len = 0;
 	uint8_t u8Status;
     if (lname)
     {
@@ -49,8 +49,9 @@ at_ble_status_t wifiprov_configure_provisioning(uint8_t* lname)
     }
 
 
-    INTERFACE_MSG_INIT(WIFIPROV_CONFIGURE_REQ, TASK_WIFIPROV);
-    INTERFACE_PACK_ARG_UINT8(lname_len);
+	INTERFACE_MSG_INIT(WIFIPROV_CONFIGURE_REQ, TASK_WIFIPROV);
+	INTERFACE_PACK_ARG_UINT8(lauthtype);
+	INTERFACE_PACK_ARG_UINT8(lname_len);
     INTERFACE_PACK_ARG_BLOCK(lname,lname_len);
     if(INTERFACE_SEND_WAIT(WIFIPROV_CONFIGURE_CFM, TASK_WIFIPROV) != 0)
 		return AT_BLE_FAILURE;
