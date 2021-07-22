@@ -4,7 +4,7 @@
  *
  * \brief This module contains NMC1000 bus wrapper APIs implementation.
  *
- * Copyright (c) 2016-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2016-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -84,7 +84,7 @@ Pio *p_pio_cs;
 /** Pointer to PDC SPI data structure. */
 static Pdc *g_p_pdc_spi;
 
-static sint8 spi_rw(uint8 *pu8Mosi, uint8 *pu8Miso, uint16 u16Sz)
+sint8 nm_spi_rw(uint8 *pu8Mosi, uint8 *pu8Miso, uint16 u16Sz)
 {
 	pdc_packet_t pdc_spi_tx_packet, pdc_spi_rx_packet;
 
@@ -202,7 +202,7 @@ sint8 nm_bus_ioctl(uint8 u8Cmd, void* pvParameter)
 #elif CONF_WINC_USE_SPI
 		case NM_BUS_IOCTL_RW: {
 			tstrNmSpiRw *pstrParam = (tstrNmSpiRw *)pvParameter;
-			s8Ret = spi_rw(pstrParam->pu8InBuf, pstrParam->pu8OutBuf, pstrParam->u16Sz);
+			s8Ret = nm_spi_rw(pstrParam->pu8InBuf, pstrParam->pu8OutBuf, pstrParam->u16Sz);
 		}
 		break;
 #endif

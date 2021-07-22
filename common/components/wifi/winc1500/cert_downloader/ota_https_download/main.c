@@ -4,7 +4,7 @@
  *
  * \brief Certificate Downloader via OTA(HTTPS) Example.
  *
- * Copyright (c) 2017-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -80,14 +80,14 @@
  * \code
  * -- Certificate downloader via OTA (HTTPS) example --
  * -- SAMD21_XPLAINED_PRO --
- * -- Compiled: Aug 22 2017 18:05:18 --
- *	(APP)(INFO)Chip ID 1503a0
- *	(APP)(INFO)DriverVerInfo: 0x13521352
- * 	(APP)(INFO)Firmware ver   : 19.5.3 Svnrev 15136
- *	(APP)(INFO)Firmware Build Jun 19 2017 Time 17:38:42
- *	(APP)(INFO)Firmware Min driver ver : 19.3.0
- *	(APP)(INFO)Driver ver: 19.5.2
- *	(APP)(INFO)Driver built at Aug 22 2017  15:35:28
+ * -- Compiled: xxx xx 2021 hh:mm:ss --
+ *    (APP)(INFO)Chip ID xxxxxx
+ *    (APP)(INFO)DriverVerInfo: 0xaaaaaaaa
+ *    (APP)(INFO)Firmware ver   : xx.x.x xxxxxx xxxxx
+ *    (APP)(INFO)Firmware Build xxx xx xxxx xx:xx:xx
+ *    (APP)(INFO)Firmware Min driver ver : xx.x.x
+ *    (APP)(INFO)Driver ver: xx.x.x
+ *    (APP)(INFO)Driver built at xxx xx xxxx xx:xx:xx
  *	main: connecting to WiFi AP DEMO_AP...
  *	wifi_cb: M2M_WIFI_CONNECTED
  *	wifi_cb: IP address is 192.168.43.210

@@ -4,7 +4,7 @@
  *
  * \brief This module contains NMC1000 bus wrapper APIs implementation.
  *
- * Copyright (c) 2016-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2016-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -40,8 +40,6 @@
 #include "conf_winc.h"
 
 #define NM_BUS_MAX_TRX_SZ	256
-
-sint8 spi_rw(uint8* pu8Mosi, uint8* pu8Miso, uint16 u16Sz);
 
 tstrNmBusCapabilities egstrNmBusCapabilities =
 {
@@ -162,8 +160,9 @@ static inline sint8 spi_rw_dma(uint8* pu8Mosi, uint8* pu8Miso, uint16 u16Sz)
 	spi_select_slave(&master, &slave_inst, true);
 	dma_start_transfer_job(&dma_res_rx);
 	dma_start_transfer_job(&dma_res_tx);
-	while((!spi_dma_tx_done) && (!spi_dma_rx_done))
-		;
+    /* Must wait until both spi tx dma and spi rx dma are complete.
+     * spi rx dma will be the last to complete, so could just wait on that. */
+    while((!spi_dma_tx_done) || (!spi_dma_rx_done));
 	spi_select_slave(&master, &slave_inst, false);
 	
 	return M2M_SUCCESS;
@@ -197,16 +196,12 @@ static inline sint8 spi_rw_pio(uint8* pu8Mosi, uint8* pu8Miso, uint16 u16Sz)
 
 	while (u16Sz) {
 		txd_data = *pu8Mosi;
-		while (!spi_is_ready_to_write(&master))
-			;
-		while(spi_write(&master, txd_data) != STATUS_OK)
-			;
+        while(!spi_is_ready_to_write(&master));
+        while(spi_write(&master, txd_data) != STATUS_OK);
 
 		/* Read SPI master data register. */
-		while (!spi_is_ready_to_read(&master))
-			;
-		while (spi_read(&master, &rxd_data) != STATUS_OK)
-			;
+        while(!spi_is_ready_to_read(&master));
+        while(spi_read(&master, &rxd_data) != STATUS_OK);
 		*pu8Miso = rxd_data;
 			
 		u16Sz--;
@@ -224,7 +219,7 @@ static inline sint8 spi_rw_pio(uint8* pu8Mosi, uint8* pu8Miso, uint16 u16Sz)
 	return M2M_SUCCESS;
 }
 
-sint8 spi_rw(uint8* pu8Mosi, uint8* pu8Miso, uint16 u16Sz)
+sint8 nm_spi_rw(uint8* pu8Mosi, uint8* pu8Miso, uint16 u16Sz)
 {
 #ifdef CONF_WINC_SPI_DMA
 	if (u16Sz >= 8) {
@@ -359,7 +354,7 @@ sint8 nm_bus_ioctl(uint8 u8Cmd, void* pvParameter)
 #elif defined CONF_WINC_USE_SPI
 		case NM_BUS_IOCTL_RW: {
 			tstrNmSpiRw *pstrParam = (tstrNmSpiRw *)pvParameter;
-			s8Ret = spi_rw(pstrParam->pu8InBuf, pstrParam->pu8OutBuf, pstrParam->u16Sz);
+			s8Ret = nm_spi_rw(pstrParam->pu8InBuf, pstrParam->pu8OutBuf, pstrParam->u16Sz);
 		}
 		break;
 #endif

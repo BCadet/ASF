@@ -2,7 +2,7 @@
  *
  * \brief WILC IoT Application Interface.
  *
- * Copyright (c) 2016-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2016-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -354,6 +354,7 @@ typedef union
 	uint8					au8CertChunk[32];
 	tstrM2MIfId				strM2MIfId;
 	tstrM2MUserMaxTxRate	strM2MUserMaxTxRate;
+	tstrM2mReqHTEnable		strM2mReqHTEnable;
 }tuCtrlStruct;
 
 /*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
@@ -2125,6 +2126,24 @@ NMI_API sint8 m2m_wifi_set_max_tx_rate(tenuTxDataRate enuMaxTxDataRate);
 @warning	
 */
 NMI_API sint8 m2m_wifi_set_antenna_mode(uint8 ant_mode, uint8 gpio_mode, uint8 ant_gpio1, uint8 ant_gpio2);
+
+/**@}*/
+/** @defgroup WifiSetHTEnableFn m2m_wifi_set_ht_enable
+ *   @ingroup WLANAPI
+ *   This function enable or disables 11n High Throughput feature in firmware.
+ */
+ /**@{*/
+/*!
+@fn	\
+	sint8 m2m_wifi_set_ht_enable(uint8  value)
+@param [in]	value;
+		1 = enable (default in firmware)
+		0 = disable
+@return
+	The function returns @ref M2M_SUCCESS for successful operations and a negative value otherwise.
+@sa	strM2mReqHTEnable
+*/
+NMI_API sint8 m2m_wifi_set_ht_enable(uint8  value);
 
 #ifdef __cplusplus
 }

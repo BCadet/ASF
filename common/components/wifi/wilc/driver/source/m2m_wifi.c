@@ -4,7 +4,7 @@
  *
  * \brief This module contains WILC M2M Wi-Fi APIs implementation.
  *
- * Copyright (c) 2016-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2016-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -762,20 +762,23 @@ sint8 m2m_wifi_set_sleep_mode(uint8 PsTyp, uint8 BcastEn)
 	tstrM2mPsType* pstrPs = &guCtrlStruct.strM2mPsType;
 	pstrPs->u8PsType = PsTyp;
 	pstrPs->u8BcastEn = BcastEn;
-	
+
 	if (hif_get_sleep_mode() == PsTyp)
 		return ret;
-	
-	hif_set_sleep_mode(PsTyp);
+
+	if (PsTyp != M2M_NO_PS)
+		hif_set_sleep_mode(PsTyp);
+
 	ret = hif_send(M2M_REQ_GRP_WIFI, M2M_WIFI_REQ_SLEEP, (uint8*)pstrPs,sizeof(tstrM2mPsType), NULL, 0, 0);
-	
-	if (ret != M2M_SUCCESS)
+
+	if (ret != M2M_SUCCESS || PsTyp == M2M_NO_PS)
 		hif_set_sleep_mode(M2M_NO_PS);
 
 	M2M_INFO("POWER SAVE %d\n",PsTyp);
 
 	return ret;
 }
+
 /*!
 @fn			NMI_API sint8 m2m_wifi_set_device_name(uint8 *pu8DeviceName, uint8 u8DeviceNameLength);
 @brief		Set the WILC1000 device name which is used as P2P device name.
@@ -1052,4 +1055,25 @@ NMI_API sint8 m2m_wifi_set_antenna_mode(uint8 ant_mode, uint8 gpio_mode, uint8 a
 	s8ret = hif_send(M2M_REQ_GRP_WIFI, M2M_WIFI_REQ_SET_ANT_SWITCH_MODE, (uint8 *)&antDivParams,sizeof(tstrM2mAntDivParams),NULL,0,0);
 
 	return s8ret;	
+}
+
+/*!
+@fn          NMI_API sint8 m2m_wifi_set_ht_enable(uint8 value);
+@brief       This function enables or disables 11n HT (MCS retes) based on parameter passed.
+@param [in]  value 
+			 value can be 0 or 1, 0 to disable 11n HT and 1 to enable 11n HT.
+@sa			 tstrM2mReqHTEnable
+@return      The function shall return M2M_SUCCESE for success and a negative value otherwise
+*/
+sint8 m2m_wifi_set_ht_enable(uint8 value)
+{
+	sint8 ret = M2M_ERR_FAIL;
+	
+	if (value > 1)
+		return ret;
+	
+	tstrM2mReqHTEnable* pstrReqHTEnable = &guCtrlStruct.strM2mReqHTEnable;
+	pstrReqHTEnable->u8Enable = value;
+	ret = hif_send(M2M_REQ_GRP_WIFI, M2M_WIFI_REQ_HT_MIB_ENABLE, (uint8*)pstrReqHTEnable, sizeof(tstrM2mReqHTEnable), NULL, 0, 0);
+	return ret;
 }

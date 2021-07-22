@@ -4,7 +4,7 @@
  *
  * \brief WILC Application Interface Internal Types.
  *
- * Copyright (c) 2016-2020 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2016-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -69,7 +69,7 @@ MACROS
 */
 
 
-#define M2M_FIRMWARE_VERSION_MINOR_NO					(6)
+#define M2M_FIRMWARE_VERSION_MINOR_NO					(7)
 /*!< Firmware Minor release version number.
 */
 
@@ -90,7 +90,7 @@ MACROS
 */
 
 
-#define M2M_DRIVER_VERSION_MINOR_NO					(6)
+#define M2M_DRIVER_VERSION_MINOR_NO					(7)
 /*!< Driver Minor release version number.
 */
 
@@ -419,6 +419,9 @@ typedef enum {
 	*/
 	M2M_WIFI_P2P_AUTH_RES,
 	/*!< Set p2p pin number
+	*/
+	M2M_WIFI_REQ_HT_MIB_ENABLE,
+	/*!< Enable or disable 11n high throughput mode
 	*/
 
 }tenuM2mConfigCmd;
@@ -1704,7 +1707,23 @@ typedef struct{
 	 */
  }tstrM2mAntDivParams;
 
+ /*!
+@struct	\
+	tstrM2mReqHTEnable
+
+@brief	HT (High Throughput) enable (default) or disable
+
+	The application can request to enable or disable 11n HT feature in firmware. HT is enabled by default.
+*/
+typedef struct {
+	uint8 	u8Enable;
+	/*!< Index of the desired scan result
+	*/
+	uint8	__PAD__[PAD_SZ(1)];   
+	/*!< Padding bytes for forcing 4-byte alignment
+	*/
+}tstrM2mReqHTEnable;
+
 #pragma pack(pop) //back to whatever the previous packing mode was
 
 #endif
-

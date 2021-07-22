@@ -4,7 +4,7 @@
  *
  * \brief WINC1500 enterprise security connection with MSCHAPV2.
  *
- * Copyright (c) 2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2018-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -87,14 +87,14 @@
  * \code
  *    -- WINC1500 enterprise security connection with MSCHAPV2 example --
  *    -- SAMXXX_XPLAINED_PRO --
- *    -- Compiled: xxx xx 2018 hh:mm:ss --
- *    (APP)(INFO)Chip ID 1503a0
- *    (APP)(INFO)DriverVerInfo: 0x13301361
- *    (APP)(INFO)Firmware ver   : 19.6.1 Svnrev 16761
- *    (APP)(INFO)Firmware Build May 23 2018 Time 14:39:16
- *    (APP)(INFO)Firmware Min driver ver : 19.3.0
- *    (APP)(INFO)Driver ver: 19.6.1
- *    (APP)(INFO)Driver built at xxx  x 2018  hh:mm:ss
+ *    -- Compiled: xxx xx 2021 hh:mm:ss --
+ *    (APP)(INFO)Chip ID xxxxxx
+ *    (APP)(INFO)DriverVerInfo: 0xaaaaaaaa
+ *    (APP)(INFO)Firmware ver   : xx.x.x xxxxxx xxxxx
+ *    (APP)(INFO)Firmware Build xxx xx xxxx xx:xx:xx
+ *    (APP)(INFO)Firmware Min driver ver : xx.x.x
+ *    (APP)(INFO)Driver ver: xx.x.x
+ *    (APP)(INFO)Driver built at xxx xx xxxx xx:xx:xx
  *    Connecting to WINC1500_ENTERPRISE
  *            Username:DEMO_USER
  *    Wi-Fi connected

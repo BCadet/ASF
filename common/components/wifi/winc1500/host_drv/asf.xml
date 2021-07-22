@@ -1,12 +1,12 @@
 <asf xmlversion="1.0">
-	<select-by-device id="common.components.wifi.winc1500" caption="WINC1500 (Wi-Fi) Host Driver v19.6.1">
+	<select-by-device id="common.components.wifi.winc1500" caption="WINC1500 (Wi-Fi) Host Driver v19.7.3">
 		<info type="description" value="summary">
 			The Atmel SmartConnect WINC1500 is an IEEE 802.11 b/g/n IoT network controller SoC. It offers the ideal add-on to existing MCU solutions, making it easy to bring Wi-Fi and Network capabilities through SPI-to-Wi-Fi interfaces into your designs. The WINC1500 connects to Microchip SMART MCU, and has minimal resource requirements.
 		</info>
 		<info type="keyword" value="technology">
 			<keyword value="Wireless"/>
 		</info>
-		<module type="service" id="common.components.wifi.winc1500#0" caption="WINC1500 (Wi-Fi) Host Driver v19.6.1 - SAM4S implementation">
+		<module type="service" id="common.components.wifi.winc1500#0" caption="WINC1500 (Wi-Fi) Host Driver v19.7.3 - SAM4S implementation">
 			<info type="description" value="summary">
 				The Atmel SmartConnect WINC1500 is an IEEE 802.11 b/g/n IoT network controller SoC. It offers the ideal add-on to existing MCU solutions, making it easy to bring Wi-Fi and Network capabilities through SPI-to-Wi-Fi interfaces into your designs. The WINC1500 connects to Microchip SMART MCU, and has minimal resource requirements.
 			</info>
@@ -84,7 +84,7 @@
 			<require idref="common.services.delay"/>
 			<generator value="doxygen-module" default-mcu="unspecified-sam4s"/>
 		</module>
-		<module type="service" id="common.components.wifi.winc1500#1" caption="WINC1500 (Wi-Fi) Host Driver v19.6.1 - SAMG53 implementation">
+		<module type="service" id="common.components.wifi.winc1500#1" caption="WINC1500 (Wi-Fi) Host Driver v19.7.3 - SAMG53 implementation">
 			<info type="description" value="summary">
 				The Atmel SmartConnect WINC1500 is an IEEE 802.11 b/g/n IoT network controller SoC. It offers the ideal add-on to existing MCU solutions, making it easy to bring Wi-Fi and Network capabilities through SPI-to-Wi-Fi interfaces into your designs. The WINC1500 connects to Microchip SMART MCU, and has minimal resource requirements.
 			</info>
@@ -162,7 +162,7 @@
 			<require idref="common.services.delay"/>
 			<generator value="doxygen-module" default-mcu="unspecified-samg53"/>
 		</module>
-		<module type="service" id="common.components.wifi.winc1500#2" caption="WINC1500 (Wi-Fi) Host Driver v19.6.1 - SAMG55 implementation">
+		<module type="service" id="common.components.wifi.winc1500#2" caption="WINC1500 (Wi-Fi) Host Driver v19.7.3 - SAMG55 implementation">
 			<info type="description" value="summary">
 				The Atmel SmartConnect WINC1500 is an IEEE 802.11 b/g/n IoT network controller SoC. It offers the ideal add-on to existing MCU solutions, making it easy to bring Wi-Fi and Network capabilities through SPI-to-Wi-Fi interfaces into your designs. The WINC1500 connects to Microchip SMART MCU, and has minimal resource requirements.
 			</info>
@@ -240,7 +240,7 @@
 			<require idref="common.services.delay"/>
 			<generator value="doxygen-module" default-mcu="unspecified-samg55"/>
 		</module>
-		<module type="service" id="common.components.wifi.winc1500#3" caption="WINC1500 (Wi-Fi) Host Driver v19.6.1 - SAMD21/SAMW25 implementation">
+		<module type="service" id="common.components.wifi.winc1500#3" caption="WINC1500 (Wi-Fi) Host Driver v19.7.3 - SAMD21/SAMW25 implementation">
 			<info type="description" value="summary">
 				The Atmel SmartConnect WINC1500 is an IEEE 802.11 b/g/n IoT network controller SoC. It offers the ideal add-on to existing MCU solutions, making it easy to bring Wi-Fi and Network capabilities through SPI-to-Wi-Fi interfaces into your designs. The WINC1500 connects to Microchip SMART MCU, and has minimal resource requirements.
 			</info>
@@ -317,7 +317,7 @@
 			<require idref="sam0.drivers.system"/>
 			<generator value="doxygen-module" default-mcu="unspecified-samd21"/>
 		</module>
-		<module type="service" id="common.components.wifi.winc1500#4" caption="WINC1500 (Wi-Fi) Host Driver v19.6.1 - SAML21 implementation">
+		<module type="service" id="common.components.wifi.winc1500#4" caption="WINC1500 (Wi-Fi) Host Driver v19.7.3 - SAML21 implementation">
 			<info type="description" value="summary">
 				The Atmel SmartConnect WINC1500 is an IEEE 802.11 b/g/n IoT network controller SoC. It offers the ideal add-on to existing MCU solutions, making it easy to bring Wi-Fi and Network capabilities through SPI-to-Wi-Fi interfaces into your designs. The WINC1500 connects to Microchip SMART MCU, and has minimal resource requirements.
 			</info>
@@ -394,7 +394,7 @@
 			<require idref="sam0.drivers.system"/>
 			<generator value="doxygen-module" default-mcu="unspecified-saml21"/>
 		</module>
-		<module type="service" id="common.components.wifi.winc1500#5" caption="WINC1500 (Wi-Fi) Host Driver v19.6.1 - SAME70 implementation">
+		<module type="service" id="common.components.wifi.winc1500#5" caption="WINC1500 (Wi-Fi) Host Driver v19.7.3 - SAME70 implementation">
 			<info type="description" value="summary">
 				The Atmel SmartConnect WINC1500 is an IEEE 802.11 b/g/n IoT network controller SoC. It offers the ideal add-on to existing MCU solutions, making it easy to bring Wi-Fi and Network capabilities through SPI-to-Wi-Fi interfaces into your designs. The WINC1500 connects to Microchip SMART MCU, and has minimal resource requirements.
 			</info>
@@ -472,7 +472,7 @@
 			<require idref="common.services.delay"/>
 			<generator value="doxygen-module" default-mcu="unspecified-same70"/>
 		</module>
-		<module type="service" id="common.components.wifi.winc1500#6" caption="WINC1500 (Wi-Fi) Host Driver v19.6.1 - SAMR21 implementation">
+		<module type="service" id="common.components.wifi.winc1500#6" caption="WINC1500 (Wi-Fi) Host Driver v19.7.3 - SAMR21 implementation">
 			<info type="description" value="summary">
 				The Atmel SmartConnect WINC1500 is an IEEE 802.11 b/g/n IoT network controller SoC. It offers the ideal add-on to existing MCU solutions, making it easy to bring Wi-Fi and Network capabilities through SPI-to-Wi-Fi interfaces into your designs. The WINC1500 connects to Microchip SMART MCU, and has minimal resource requirements.
 			</info>
@@ -549,7 +549,7 @@
 			<require idref="sam0.drivers.system"/>
 			<generator value="doxygen-module" default-mcu="unspecified-samr21"/>
 		</module>
-		<module type="service" id="common.components.wifi.winc1500#7" caption="WINC1500 (Wi-Fi) Host Driver v19.6.1 - SAML22 implementation">
+		<module type="service" id="common.components.wifi.winc1500#7" caption="WINC1500 (Wi-Fi) Host Driver v19.7.3 - SAML22 implementation">
 			<info type="description" value="summary">
 				The Atmel SmartConnect WINC1500 is an IEEE 802.11 b/g/n IoT network controller SoC. It offers the ideal add-on to existing MCU solutions, making it easy to bring Wi-Fi and Network capabilities through SPI-to-Wi-Fi interfaces into your designs. The WINC1500 connects to Microchip SMART MCU, and has minimal resource requirements.
 			</info>
@@ -626,7 +626,7 @@
 			<require idref="sam0.drivers.system"/>
 			<generator value="doxygen-module" default-mcu="unspecified-saml22"/>
 		</module>
-		<module type="service" id="common.components.wifi.winc1500#8" caption="WINC1500 (Wi-Fi) Host Driver v19.6.1 - SAMR30 implementation">
+		<module type="service" id="common.components.wifi.winc1500#8" caption="WINC1500 (Wi-Fi) Host Driver v19.7.3 - SAMR30 implementation">
 			<info type="description" value="summary">
 				The Atmel SmartConnect WINC1500 is an IEEE 802.11 b/g/n IoT network controller SoC. It offers the ideal add-on to existing MCU solutions, making it easy to bring Wi-Fi and Network capabilities through SPI-to-Wi-Fi interfaces into your designs. The WINC1500 connects to Microchip SMART MCU, and has minimal resource requirements.
 			</info>

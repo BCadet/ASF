@@ -4,7 +4,7 @@
  *
  * \brief WINC1500 security connection with WPA/WPA2 enterprise.
  *
- * Copyright (c) 2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2018-2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -84,13 +84,13 @@
  * \code
  * -- WINC1500 provisioning for enterprise security example --
  *    -- SAMxxx_XPLAINED_PRO --
- * (APP)(INFO)Chip ID 1503a0
- * (APP)(INFO)DriverVerInfo: 0x13301361
- * (APP)(INFO)Firmware ver   : 19.6.1 Svnrev 16761
- * (APP)(INFO)Firmware Build May 23 2018 Time 14:39:16
- * (APP)(INFO)Firmware Min driver ver : 19.3.0
- * (APP)(INFO)Driver ver: 19.6.1
- * (APP)(INFO)Driver built at xxx  xx xxxx  xxxx
+*     (APP)(INFO)Chip ID xxxxxx
+ *    (APP)(INFO)DriverVerInfo: 0xaaaaaaaa
+ *    (APP)(INFO)Firmware ver   : xx.x.x xxxxxx xxxxx
+ *    (APP)(INFO)Firmware Build xxx xx xxxx xx:xx:xx
+ *    (APP)(INFO)Firmware Min driver ver : xx.x.x
+ *    (APP)(INFO)Driver ver: xx.x.x
+ *    (APP)(INFO)Driver built at xxx xx xxxx xx:xx:xx
  * AP mode started. You can connect to WINC1500_PROV_HTTP.
  * prov_wifi_cb: M2M_WIFI_RESP_CON_STATE_CHANGED: CONNECTED
  * prov_wifi_cb: M2M_WIFI_REQ_DHCP_CONF: IP is 192.168.1.100
@@ -102,12 +102,12 @@
  * prov_wifi_cb: M2M_WIFI_RESP_CON_STATE_CHANGED: DISCONNECTED
  * Credential received
  * Connecting to WINC1500_ENTERPRISE...(APP)(INFO)Chip ID 1503a0
- * (APP)(INFO)DriverVerInfo: 0x13301361
- * (APP)(INFO)Firmware ver   : 19.6.1 Svnrev 16761
- * (APP)(INFO)Firmware Build May 23 2018 Time 14:39:16
- * (APP)(INFO)Firmware Min driver ver : 19.3.0
- * (APP)(INFO)Driver ver: 19.6.1
- * (APP)(INFO)Driver built at xxx  xx xxxx  xxxx
+ *    (APP)(INFO)DriverVerInfo: 0xaaaaaaaa
+ *    (APP)(INFO)Firmware ver   : xx.x.x xxxxxx xxxxx
+ *    (APP)(INFO)Firmware Build xxx xx xxxx xx:xx:xx
+ *    (APP)(INFO)Firmware Min driver ver : xx.x.x
+ *    (APP)(INFO)Driver ver: xx.x.x
+ *    (APP)(INFO)Driver built at xxx xx xxxx xx:xx:xx
  * Enterprise Security using xxxx - Connecting to xxxxx...
  *    Wi-Fi connected
  *    Wi-Fi IP is xxx.xxx.xxx.xxx
