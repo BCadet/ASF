@@ -6,8 +6,10 @@
 		EndDevice Certification Application
 		</info>
 		<build type="c-source" value="enddevice_cert.c"/>
+		<build type="c-source" value="enddevice_cpc.c"/>
 		<build type="include-path" value="."/>
 		<build type="header-file" value="enddevice_cert.h"/>
+		<build type="header-file" value="enddevice_cpc.h"/>
 		<build type="header-file" value="conf_certification.h"/>	
 		<build subtype="required-header-file" type="module-config" value="conf_certification.h" />
 		<build type="module-config" subtype="path" value="."/>

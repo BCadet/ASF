@@ -1,5 +1,5 @@
 <asf xmlversion="1.0">
-	<project caption="WINC3400 Signal Strength Example - SAMG55 XPlained Pro" id="common.components.wifi.winc3400.signal_strength_example.samg55_xplained_pro" force-caption="true" force-description="true">
+	<project caption="WINC3400 Signal Strength Example for SAMG55 XPlained Pro" id="common.components.wifi.winc3400.signal_strength_example.samg55_xplained_pro">
 		<!-- Summary Description -->
 		<info type="description" value="summary">
 			This example demonstrates how to check the signal strength (RSSI) of the WINC3400 Wi-Fi module.

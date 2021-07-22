@@ -30,6 +30,7 @@
 		<build type="header-file"   value="commands.h"/>
 		<build type="header-file"   value="wsndemo.h"/>		
 		<build type="include-path" value="."/>
+		<require idref="thirdparty.wireless.utils.wsnmonitor"/>			
 		<device-support-alias value="avr2130_lwmesh_support"/>
 		<!-- ++++++++++++++++++++++++++++++++++++++++++++++REQUIRE++++++++++++++++++++++++++++++++++++++++++++++. -->
 		<require idref="thirdparty.wireless.common_services.sleep_mgr"/>

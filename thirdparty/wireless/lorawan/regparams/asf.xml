@@ -1,5 +1,6 @@
 <asf xmlversion="1.0">
-    <select-by-config id="config.thirdparty.wireless.lorawan.reg.band" name="config.thirdparty.wireless.lorawan.reg.band" caption="Reg Parameters Configuration" default="multi_band">		
+    <select-by-config id="config.thirdparty.wireless.lorawan.reg.band" name="config.thirdparty.wireless.lorawan.reg.band" caption="Reg Parameters Configuration" default="multi_band">	
+
 		<module type="component" id="config.thirdparty.wireless.lorawan.reg.band#multi_band"     caption="lorawan for MULTIBAND band">
             <info type="description" value="summary">
             This module include files related to multi Band

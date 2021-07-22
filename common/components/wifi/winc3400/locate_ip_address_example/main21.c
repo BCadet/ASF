@@ -4,7 +4,7 @@
  *
  * \brief WINC3400 locate IP address example
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -78,7 +78,7 @@
  *
  * \section compinfo Compilation Information
  * This software was written for the GNU GCC compiler using Atmel Studio 6.2
- * Other compilers are not guaranteed to work.
+ * Other compilers may or may not work.
  *
  * \section contactinfo Contact Information
  * For further information, visit
@@ -142,6 +142,7 @@ static void wifi_callback(uint8_t msg_type, void *msg_data)
 		if (msg_wifi_state->u8CurrState == M2M_WIFI_CONNECTED) {
 			/* If Wi-Fi is connected. */
 			printf("Wi-Fi connected\r\n");
+			m2m_wifi_request_dhcp_client();
 		} else if (msg_wifi_state->u8CurrState == M2M_WIFI_DISCONNECTED) {
 			/* If Wi-Fi is disconnected. */
 			printf("Wi-Fi disconnected\r\n");
@@ -237,7 +238,7 @@ static void socket_event_handler(SOCKET sock, uint8_t msg_type, void *msg_data)
 /**
  * \brief Callback of gethostbyname function.
  *
- * \param[in] domain_name Domain name.
+ * \param[in] doamin_name Domain name.
  * \param[in] server_ip IP of server.
  */
 static void socket_resolve_handler(uint8_t *domain_name, uint32_t server_ip)
@@ -343,7 +344,7 @@ int main(void)
 	socketInit();
 	registerSocketCallback(socket_event_handler, socket_resolve_handler);
 
-	/* Connect to AP. */
+	/* Connect to router. */
 	ret = m2m_wifi_connect((char *)MAIN_WLAN_SSID, sizeof(MAIN_WLAN_SSID),
 			MAIN_WLAN_AUTH, (char *)MAIN_WLAN_PSK, M2M_WIFI_CH_ALL);
 	if (M2M_SUCCESS != ret) {

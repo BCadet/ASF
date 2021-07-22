@@ -1,10 +1,9 @@
-
 /**
  * \file
  *
  * \brief Heart Rate Service declarations
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -31,10 +30,8 @@
  * \asf_license_stop
  *
  */
-
 /*
- * Support and FAQ: visit <a href="https://www.microchip.com/support/">Atmel
- *Support</a>
+ * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
  */
 
 
@@ -50,7 +47,7 @@
 @{
 */
 /************************************************************************/
-/*								enum
+/*								enum					
  *               */
 /************************************************************************/
 typedef enum {
@@ -105,7 +102,6 @@ typedef enum {
  *
  * @param[in] heart_rate_serv heart rate service instance
  * @param[in] char_data New heart rate value
- * @param[in] length Length of new heart rate value
  * @return @ref AT_BLE_SUCCESS operation completed successfully
  * @return @ref AT_BLE_FAILURE Generic error.
  */
@@ -114,13 +110,12 @@ at_ble_status_t heart_rate_update_char_value (gatt_service_handler_t *heart_rate
 /**@brief Heart rate service and characteristic initialization(Called only once by user).
  *
  * @param[in] heart_rate_serv heart rate service instance
- * @param[in] heart_rate_value heart rate value
  *
  * @return none
  */
-void heart_rate_init_service(gatt_service_handler_t *heart_rate_serv, uint8_t *heart_rate_value);
+void heart_rate_init_service(gatt_service_handler_t *heart_rate_serv);
 
-/**@brief Register a heart rate service instance inside stack.
+/**@brief Register a heart rate service instance inside stack. 
  *
  * @param[in] heart_rate_service heart rate service instance
  *

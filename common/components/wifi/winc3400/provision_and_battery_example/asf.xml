@@ -5,7 +5,7 @@
 			<info type="description" value="summary">
 				Provision and Battery application for BLE stack
 			</info>
-
+			
 			<!-- Source -->
 			<build type="include-path" value="."/>
 			<build type="header-file" value="battery_app.h"/>
@@ -18,14 +18,14 @@
 
 			<!-- Device support -->
 			<device-support value="samd21"/>
-
+			
 			<!-- Required modules -->
 			<require idref="common.components.wifi.winc3400.ble.ble_services.battery"/>
 			<require idref="common.components.wifi.winc3400.ble.onchip_profiles.wifi_prov"/>
 			<require idref="sam0.utils"/>
 			<require idref="sam0.utils.stdio"/>
 			<require idref="sam0.utils.stdio.stdio_serial"/>
-
+			
 			<info type="gui-flag" value="move-to-root"/>
 		</module>
 		<module type="meta" caption="WINC3400 Provision and Battery Application" id="common.components.wifi.winc3400.provision_and_battery_example#1">
@@ -33,7 +33,7 @@
 			<info type="description" value="summary">
 				Provision and Battery application for BLE stack
 			</info>
-
+			
 			<!-- Source -->
 			<build type="include-path" value="."/>
 			<build type="header-file" value="battery_app.h"/>
@@ -47,14 +47,14 @@
 			<device-support value="sam4s"/>
 			<device-support value="samg55"/>
 			<device-support value="same70"/>
-
+			
 			<!-- Required modules -->
 			<require idref="common.components.wifi.winc3400.ble.ble_services.battery"/>
 			<require idref="common.components.wifi.winc3400.ble.onchip_profiles.wifi_prov"/>
 			<require idref="common.services.basic.clock"/>
-			<require idref="common.utils.stdio.stdio_serial"/>
-
+			<require idref="common.utils.stdio.stdio_serial"/>	
+			
 			<info type="gui-flag" value="move-to-root"/>
-		</module>
+		</module>		
 	</select-by-device>
 </asf>

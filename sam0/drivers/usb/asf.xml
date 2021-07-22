@@ -91,6 +91,7 @@
 			<device-support value="saml21" />
 			<device-support value="samr30" />
 			<device-support value="samr34"/>
+			<device-support value="wlr089"/>
 
 			<require idref="sam0.utils"/>
 			<require idref="sam0.drivers.system"/>
@@ -179,6 +180,7 @@
 		<device-support value="saml22"/>
 		<device-support value="samr30" />
 		<device-support value="samr34"/>
+		<device-support value="wlr089"/>
 
 		<generator value="doxygen-module-v2" default-mcu="unspecified-saml21"/>
 	</module>

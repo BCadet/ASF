@@ -1,5 +1,5 @@
 <asf xmlversion="1.0">
-	<project caption="WINC3400 MAC Address Example - SAMD21 XPlained Pro" id="common.components.wifi.winc3400.mac_address_example.samd21_xplained_pro" force-caption="true" force-description="true">
+	<project caption="WINC3400 MAC Address Example for SAMD21 XPlained Pro" id="common.components.wifi.winc3400.mac_address_example.samd21_xplained_pro">
 		<!-- Summary Description -->
 		<info type="description" value="summary">
 			This example demonstrates how to retrieve the MAC address of the WINC3400 Wi-Fi module.

@@ -42,6 +42,7 @@
 		<device-support value="same70"/>
 		<device-support value="samr30"/>
 		<device-support value="samr34"/>
+		<device-support value="wlr089"/>
 
 	</module>
 
@@ -146,6 +147,7 @@
 			<device-support value="saml22"/>
 			<device-support value="samr30"/>
 			<device-support value="samr34"/>
+			<device-support value="wlr089"/>
 			<generator value="doxygen-module" default-mcu="unspecified-samd21"/>
 		</module>
 		<module type="driver" id="common.drivers.usb.device#8" caption="USB Device - SAM UHDP implementation">
@@ -231,6 +233,7 @@
 			<device-support value="samda1"/>
 			<device-support value="samr30"/>
 			<device-support value="samr34"/>
+			<device-support value="wlr089"/>
 			<generator value="doxygen-module" default-mcu="unspecified-samd21"/>
 		</module>
 		<module type="driver" id="common.drivers.usb.host#5" caption="USB host driver - SAM UHDP implementation">

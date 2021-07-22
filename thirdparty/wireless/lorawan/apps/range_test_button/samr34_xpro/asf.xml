@@ -20,9 +20,9 @@
         <build type="header-file" value="conf_resource.h"/>
         <build type="header-file" value="conf_sw_timer.h"/>
         <build type="header-file" value="conf_sal.h"/>
-        
+        <build type="define" name="MODULE_EUI_READ" value="0"/>        
        
-        
+
         <require idref="thirdparty.wireless.lorawan.services.resources"/>
         <config name="config.sam0.drivers.aes" value="polled"/>
         <config name="config.sam0.drivers.sercom.spi" value="polled"/>

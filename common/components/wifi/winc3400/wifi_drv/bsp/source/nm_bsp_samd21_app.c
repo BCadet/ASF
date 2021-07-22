@@ -4,7 +4,7 @@
  *
  * \brief This module contains SAMD21 BSP APIs implementation.
  *
- * Copyright (c) 2017-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -31,7 +31,8 @@
  * \asf_license_stop
  *
  */
-
+ 
+#include "bsp/include/nm_bsp_samd21_app.h"
 #include "common/include/nm_common.h"
 
 #define BSP_MIN(x,y) ((x)>(y)?(y):(x))
@@ -39,7 +40,7 @@
 
 #define SW1_PIN
 #define SW1_MUX
-#define SW1_LINE
+#define SW1_LINE 
 
 #ifdef WING_BOARD_WITH_LEDS_BUTTON
 #define SW2_LINE	    3
@@ -179,13 +180,14 @@ else
 			}
 		}
 
-		btn_poll();
+		btn_poll();		
 	}
 }
 
 /*
 *	@fn			_tcc_configurable_timer_callback
 *	@brief		Configurable Timer Callback
+*	@date		08 October 2015
 *	@version	1.0
 */
 
@@ -214,7 +216,7 @@ static void timer0_init(void)
 	&tcc_instance,
 	_tcc_callback_to_change_duty_cycle,
 	TCC_CALLBACK_CHANNEL_0);
-
+	
 	tcc_enable_callback(&tcc_instance,
 	TCC_CALLBACK_CHANNEL_0);
 }
@@ -222,6 +224,7 @@ static void timer0_init(void)
 /*
 *	@fn			configurable_timer_init
 *	@brief		Initialize the Configurable Timer
+*	@date		08 October 2015
 *	@version	1.0
 */
 
@@ -264,6 +267,8 @@ static void btn2_isr(void)
 *	@fn		nm_bsp_init
 *	@brief	Initialize BSP
 *	@return	0 in case of success and -1 in case of failure
+*	@author	M.S.M
+*	@date	11 July 2012
 *	@version	1.0
 */
 sint8 nm_bsp_app_init(void)
@@ -282,24 +287,25 @@ sint8 nm_bsp_app_init(void)
 	gstrTimer1ms.pfCb = NULL;
 	gstrTimer1ms.u32Timeout = 0;
 	gstrTimer1ms.u32Period = 0;
-
+	
 	gstrConfigurableTimer.pfCb = NULL;
 	gstrConfigurableTimer.u32Timeout = 0;
 	gstrConfigurableTimer.u32Period = 0;
-
+		
 	timer0_init();
-
+	
 	return M2M_SUCCESS;
 }
 
 /*
 *	@fn			nm_bsp_app_configurable_timer_init
 *	@brief		Initialize the Configurable Timer
+*	@date		08 October 2015
 *	@version	1.0
 */
 void nm_bsp_app_configurable_timer_init(uint32_t u32Period)
 {
-	configurable_timer_init(u32Period);
+	configurable_timer_init(u32Period);	
 }
 
 /**
@@ -318,6 +324,8 @@ sint8 nm_bsp_app_deinit(void)
 /*
 *	@fn		nm_bsp_btn_init
 *	@brief	Initialize buttons driver
+*	@author	M.S.M
+*	@date	28 OCT 2013
 *	@version	1.0
 */
 
@@ -325,13 +333,13 @@ void nm_bsp_btn_init(tpfNmBspBtnPress pfBtnCb)
 {
 	//struct port_config pin_conf;
 	struct extint_chan_conf config_extint_chan;
-
+		
 	gpfBtns = pfBtnCb;
 	gu8BtnIfg = 0;
 	gu16Btn1Cnt = 0;
 	gu16Btn2Cnt = 0;
 
-#ifdef WING_BOARD_WITH_LEDS_BUTTON
+#ifdef WING_BOARD_WITH_LEDS_BUTTON	
 	port_get_config_defaults(&pin_conf);
 
 	/* Set buttons as inputs */
@@ -339,7 +347,7 @@ void nm_bsp_btn_init(tpfNmBspBtnPress pfBtnCb)
 	pin_conf.input_pull = PORT_PIN_PULL_UP;
 	port_pin_set_config(SW2_PIN, &pin_conf);
 
-
+	
 	/*Configure SW1*/
 	extint_chan_get_config_defaults(&config_extint_chan);
 
@@ -378,6 +386,8 @@ void nm_bsp_btn_init(tpfNmBspBtnPress pfBtnCb)
 
 /*
 *	@fn		nm_bsp_uart_sendnm_bsp_uart_send
+*	@author	M.S.M
+*	@date	28 OCT 2013
 *	@version	1.0
 */
 void nm_bsp_uart_send(const uint8 *pu8Buf, uint16 u16Sz)
@@ -387,6 +397,8 @@ void nm_bsp_uart_send(const uint8 *pu8Buf, uint16 u16Sz)
 /**
 *	@fn		nm_bsp_start_timer
 *	@brief	Start 20ms timer
+*	@author	M.S.M
+*	@date	28 OCT 2013
 *	@version	1.0
 */
 void nm_bsp_start_timer(tpfNmBspTimerCb pfCb, uint32 u32Period)
@@ -399,6 +411,7 @@ void nm_bsp_start_timer(tpfNmBspTimerCb pfCb, uint32 u32Period)
 /*
 *	@fn			nm_bsp_start_1ms_timer
 *	@brief		Start 1ms timer
+*	@date		08 October 2015
 *	@version	1.0
 */
 void nm_bsp_start_1ms_timer(tpfNmBspTimerCb pfCb)
@@ -409,6 +422,7 @@ void nm_bsp_start_1ms_timer(tpfNmBspTimerCb pfCb)
 /*
 *	@fn			nm_bsp_start_configurable_timer
 *	@brief		Start configurable timer
+*	@date		08 October 2015
 *	@version	1.0
 */
 void nm_bsp_start_configurable_timer(tpfNmBspTimerCb pfCb)
@@ -420,6 +434,8 @@ void nm_bsp_start_configurable_timer(tpfNmBspTimerCb pfCb)
 /**
 *	@fn		nm_bsp_stop_timer
 *	@brief	Start 20ms timer
+*	@author	M.S.M
+*	@date	28 OCT 2013
 *	@version	1.0
 */
 void nm_bsp_stop_timer(void)
@@ -430,6 +446,7 @@ void nm_bsp_stop_timer(void)
 /*
 *	@fn			nm_bsp_stop_1ms_timer
 *	@brief		Stop 1ms timer
+*	@date		08 October 2015
 *	@version	1.0
 */
 void nm_bsp_stop_1ms_timer(void)
@@ -440,6 +457,7 @@ void nm_bsp_stop_1ms_timer(void)
 /*
 *	@fn			nm_bsp_stop_configurable_timer
 *	@brief		Stop configurable timer
+*	@date		08 October 2015
 *	@version	1.0
 */
 void nm_bsp_stop_configurable_timer(void)
@@ -452,7 +470,9 @@ void nm_bsp_stop_configurable_timer(void)
 #ifdef _STATIC_PS_
 /**
 *	@fn		nm_bsp_register_wake_isr
-*	@brief	REGISTER wake up timer
+*	@brief	REGISTER wake up timer 
+*	@author	M.S.M
+*	@date	28 OCT 2013
 *	@version	1.0
 */
 void nm_bsp_register_wake_isr(tpfNmBspIsr pfIsr,uint32 u32MsPeriod)
@@ -466,6 +486,8 @@ void nm_bsp_register_wake_isr(tpfNmBspIsr pfIsr,uint32 u32MsPeriod)
 /**
 *	@fn		nm_bsp_wake_ctrl
 *	@brief	control wake up timer
+*	@author	M.S.M
+*	@date	28 OCT 2013
 *	@version	1.0
 */
 void nm_bsp_wake_ctrl(uint8 en)
@@ -480,7 +502,9 @@ void nm_bsp_wake_ctrl(uint8 en)
 #if (defined _STATIC_PS_)||(defined _DYNAMIC_PS_)
 /**
 *	@fn		nm_bsp_enable_mcu_ps
-*	@brief	Start POWER SAVE FOR MCU
+*	@brief	Start POWER SAVE FOR MCU 
+*	@author	M.S.M
+*	@date	28 OCT 2013
 *	@version	1.0
 */
 void nm_bsp_enable_mcu_ps(void)

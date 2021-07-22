@@ -25,7 +25,8 @@
             <build type="distribute" subtype="license" value="../EULA.txt"/>
     </module>
 	
-    <select-by-config id="config.thirdparty.wireless.lorawan" name="config.thirdparty.wireless.lorawan" caption="LoRaWAN Stack Configuration" default="lib">		
+    <select-by-config id="config.thirdparty.wireless.lorawan" name="config.thirdparty.wireless.lorawan" caption="LoRaWAN Stack Configuration" default="lib">
+		
 		<module type="meta" id="config.thirdparty.wireless.lorawan#lib" caption="LoRaWAN Stack">
 			<info type="description" value="summary">
 		     LoRaWAN Stack

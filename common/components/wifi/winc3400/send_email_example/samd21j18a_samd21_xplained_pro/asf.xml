@@ -1,5 +1,5 @@
 <asf xmlversion="1.0">
-	<project caption="WINC3400 Send Email Example - SAMD21 XPlained Pro" id="common.components.wifi.winc3400.send_email_example.samd21_xplained_pro" force-caption="true" force-description="true">
+	<project caption="WINC3400 Send Email Example for SAMD21 XPlained Pro" id="common.components.wifi.winc3400.send_email_example.samd21_xplained_pro">
 		<!-- Summary Description -->
 		<info type="description" value="summary">
 			This example demonstrates how to implement a send email client via SMTP using the WINC3400 Wi-Fi module.

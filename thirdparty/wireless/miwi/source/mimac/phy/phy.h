@@ -170,7 +170,6 @@
 #define TRX_STATUS_RX_AACK_ON_NOCLK   29
 #define TRX_STATUS_BUSY_RX_AACK_NOCLK 30
 #define TRX_STATUS_STATE_TRANSITION   31
-#define TRX_STATUS_TRX_STATUS_MASK    0x1f
 #define TRX_STATUS_MASK               0x1f
 
 #define PHY_CC_CCA_REG    0x08
@@ -215,69 +214,11 @@
 #define RND_VALUE         5
 #define RSSI              0
 
-/* XAH_CTRL_1 */
-#define ARET_TX_TS_EN     7
-#define AACK_FLTR_RES_FT  5
-#define AACK_UPLD_RES_FT  4
-#define AACK_ACK_TIME     2
-#define AACK_PROM_MODE    1
-#define AACK_SPC_EN       0
-
 /* PHY_STATUS */
 #define PHY_STATUS_SUCCESS                 0
 #define PHY_STATUS_ERROR                   1
 #define PHY_STATUS_CHANNEL_ACCESS_FAILURE  2
 #define PHY_STATUS_NO_ACK                  3
-
-/**
- * Defines a mask for the frame type. (Table 65 IEEE 802.15.4 Specification)
- */
-#define FCF_FRAMETYPE_MASK              (0x07)
-
-/**
- * Macro to get the frame type.
- */
-#define FCF_GET_FRAMETYPE(x)            ((x) & FCF_FRAMETYPE_MASK)
-
-/*- Type definitions--------------------------------------------------------*/
-typedef void (*PHY_DataConfCb_t)(uint8_t status);
-
-typedef struct PHY_DataReq_t
-{
-	bool polledConfirmation;
-	uint8_t *data;
-	PHY_DataConfCb_t confirmCallback;
-}PHY_DataReq_t;
-
-typedef struct _PhyTxFrame_t
-{
-	PHY_DataReq_t *nextReq;
-	PHY_DataReq_t phyDataReq;
-} PhyTxFrame_t;
-
-typedef struct PHY_DataInd_t {
-	uint8_t *data; // Pointer to Data
-	uint8_t size;   // Size of the frame
-	uint8_t lqi;    // Link Quality Index
-	int8_t rssi;    // RSSI
-} PHY_DataInd_t;
-	
-typedef void (*PHY_ReservedFrameIndCallback_t)(PHY_DataInd_t *ind);
-
-typedef union
-{
-	uint8_t Val;
-	struct
-	{
-		uint8_t        TX_BUSY             : 1;
-		uint8_t        TX_PENDING_ACK      : 1;
-		uint8_t        TX_FAIL             : 1;
-		uint8_t        RX_SECURITY         : 1;
-		uint8_t        RX_IGNORE_SECURITY  : 1;
-		uint8_t        RX_BUFFERED         : 1;
-		uint8_t        SEC_IF              : 1;
-	} bits;
-} RADIO_STATUS;
 
 /*- Prototypes -------------------------------------------------------------*/
 void PHY_Init(void);
@@ -288,9 +229,8 @@ void PHY_SetShortAddr(uint16_t addr);
 void PHY_SetTxPower(uint8_t txPower);
 void PHY_Sleep(void);
 void PHY_Wakeup(void);
-void PHY_DataReq(PHY_DataReq_t* phyDataReq);
+void PHY_DataReq(uint8_t *data);
 void PHY_DataConf(uint8_t status);
-void PHY_TxHandler(void);
 void print_rx_message(void);
 void CONSOLE_PrintHex(uint8_t toPrint);
 void CONSOLE_PutString(char* str);
@@ -308,10 +248,34 @@ API_UINT32_UNION FrameCounter, uint8_t FrameControl);
 void mic_generator (uint8_t *Payloadinfo, uint8_t  , uint8_t frame_control ,  API_UINT32_UNION FrameCounter , uint8_t * Address);
 bool validate_mic(void);
 
-#if (defined(OTAU_ENABLED) && defined(OTAU_PHY_MODE))
-void PHY_EnableReservedFrameRx(void);
-bool PHY_SubscribeReservedFrameIndicationCallback(PHY_ReservedFrameIndCallback_t callback);
-#endif
+typedef union
+{
+    uint8_t Val;               // value of interrupts
+    struct
+    {
+        uint8_t RF_TXIF :1;    // transmission finish interrupt
+        uint8_t :2;
+        uint8_t RF_RXIF :1;    // receiving a packet interrupt
+        uint8_t SECIF :1;      // receiving a secured packet interrupt
+        uint8_t :4;
+    }bits;                  // bit map of interrupts
+} AT86RF233_IFREG;
+
+typedef union
+{
+    uint8_t Val;
+    struct
+    {
+        uint8_t        TX_BUSY             : 1;
+        uint8_t        TX_PENDING_ACK      : 1;
+        uint8_t        TX_FAIL             : 1;
+        uint8_t        RX_SECURITY         : 1;
+        uint8_t        RX_IGNORE_SECURITY  : 1;
+        uint8_t        RX_BUFFERED         : 1;
+        uint8_t        SEC_IF              : 1;
+    } bits;
+} RADIO_STATUS;
+
 
 #define SEC_LEVEL_CBC_MAC_32    7
 #define SEC_LEVEL_CBC_MAC_64    6
@@ -320,6 +284,7 @@ bool PHY_SubscribeReservedFrameIndicationCallback(PHY_ReservedFrameIndCallback_t
 #define SEC_LEVEL_CCM_64        3
 #define SEC_LEVEL_CCM_128       2
 #define SEC_LEVEL_CTR           1
+
 
 #if defined(PROTOCOL_P2P) || defined (PROTOCOL_STAR)
     #define PROTOCOL_HEADER_SIZE 0

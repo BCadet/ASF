@@ -42,6 +42,7 @@
 		<device-support value="sams70"/>
 		<device-support value="samr30"/>
 		<device-support value="samr34"/>
+		<device-support value="wlr089"/>
 		<generator value="doxygen-module" default-mcu="unspecified-uc3a"/>
 	</module>
 </asf>

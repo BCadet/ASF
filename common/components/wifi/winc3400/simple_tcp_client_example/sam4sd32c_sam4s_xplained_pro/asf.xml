@@ -1,5 +1,5 @@
 <asf xmlversion="1.0">
-	<project caption="WINC3400 Simple TCP Client Example - SAM4S XPlained Pro" id="common.components.wifi.winc3400.simple_tcp_client_example.sam4s_xplained_pro">
+	<project caption="WINC3400 Simple TCP Client Example for SAM4S XPlained Pro" id="common.components.wifi.winc3400.simple_tcp_client_example.sam4s_xplained_pro">
 		<!-- Summary Description -->
 		<info type="description" value="summary">
 			This example demonstrates how to perform a TCP client connection using the WINC3400 Wi-Fi module.

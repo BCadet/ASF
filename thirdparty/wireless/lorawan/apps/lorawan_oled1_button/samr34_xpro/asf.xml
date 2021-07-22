@@ -24,6 +24,7 @@
         <build type="header-file" value="conf_menu.h"/>
         <build type="header-file" value="conf_sal.h"/>
         <build type="define" name="EXT1_OLED1" value =""/>
+		<build type="define" name="MODULE_EUI_READ" value="0"/>
         
         <require idref="thirdparty.wireless.lorawan.services.resources"/>
         

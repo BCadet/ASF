@@ -1,4 +1,11 @@
 <asf xmlversion="1.0">
+	<module type="meta" id="thirdparty.wireless.utils.wsnmonitor"   caption="WSN Monitor Tool ">
+		<info type="description" value="summary">
+		</info>
+		<info type="gui-flag" value="move-to-root"/>
+		<build type="distribute" subtype="user-file" value="wsnmonitor_setup.exe"/>
+	</module>
+	
 	<module type="meta" id="thirdparty.wireless.utils.bootloadertool"   caption="Serial Bootloader Tool ">
 		<info type="description" value="summary">
 		</info>

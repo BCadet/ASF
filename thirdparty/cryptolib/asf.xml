@@ -59,5 +59,6 @@
 		<require idref="thirdparty.wireless.services.cryptoauthlib.crypto"/>
 
 		<device-support value="samr34"/>
+		<device-support value="wlr089"/>
 	</module>
 </asf>

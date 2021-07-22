@@ -15,6 +15,7 @@
 		<build type="header-file"   value="commands.h"/>
 		<build type="header-file"   value="wsndemo.h"/>
 		<build type="include-path" value="."/>
+		<require idref="thirdparty.wireless.utils.wsnmonitor"/>
 		<!-- ++++++++++++++++++++++++++++++++++++++++++++++REQUIRE++++++++++++++++++++++++++++++++++++++++++++++. -->
 		<require idref="thirdparty.wireless.addons.sio2host"/>
 		<require idref="thirdparty.wireless.miwi"/>

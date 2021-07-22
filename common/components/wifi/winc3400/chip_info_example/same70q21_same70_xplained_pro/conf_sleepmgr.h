@@ -1,15 +1,16 @@
 /**
  * \file
  *
- * \brief SAME70 Chip-specific sleep manager configuration
+ * \brief Chip-specific sleep manager configuration
  *
- * Copyright (c) 2018-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
  * \page License
  *
- * Subject toEnd any derivatives exclusively with Microchip products.
+ * Subject to your compliance with these terms, you may use Microchip
+ * software and any derivatives exclusively with Microchip products.
  * It is your responsibility to comply with third party license terms applicable
  * to your use of third party software (including open source software) that
  * may accompany Microchip software.

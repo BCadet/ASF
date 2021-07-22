@@ -15,7 +15,7 @@
 			<device-support value="samd21"/>
 			<device-support value="saml21"/>
 			<device-support value="saml22"/>
-			<device-support value="samr21"/>
+			<device-support value="samr21"/>			
 		
 			<!-- Required modules -->
 			<require idref="common.components.wifi.winc1500"/>
@@ -45,6 +45,27 @@
 			<require idref="common.components.wifi.winc1500"/>
 			<require idref="common.services.basic.clock"/>
 			<require idref="common.utils.stdio.stdio_serial"/>
+			<info type="gui-flag" value="move-to-root"/>
+		</module>
+		<module type="application" id="common.components.wifi.winc1500.ap_scan_example#2" caption="WINC1500 AP Scan Example">
+			<!-- Summary Description -->
+			<info type="description" value="summary">
+				This example demonstrates how to scan for Access Point (AP) using the WINC1500 Wi-Fi module.
+			</info>
+
+			<!-- Source -->
+			<build type="include-path" value="."/>
+			<build type="c-source" value="main30.c"/>
+			<build type="header-file" value="main.h"/>
+
+			<!-- Device support -->
+			<device-support value="samr30"/>
+					
+			<!-- Required modules -->
+			<require idref="common.components.wifi.winc1500"/>
+			<require idref="sam0.utils"/>
+			<require idref="sam0.utils.stdio"/>
+			<require idref="sam0.utils.stdio.stdio_serial"/>
 			<info type="gui-flag" value="move-to-root"/>
 		</module>
 	</select-by-device>

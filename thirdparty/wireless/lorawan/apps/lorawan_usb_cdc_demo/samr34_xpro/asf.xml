@@ -22,6 +22,7 @@
         <build type="header-file" value="conf_sleepmgr.h" />
         <build type="header-file" value="conf_usb.h" />
         <build type="header-file" value="conf_sal.h" />
+		<build type="define" name="MODULE_EUI_READ" value="0"/>
         
        
         

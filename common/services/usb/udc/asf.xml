@@ -46,6 +46,7 @@
 		<device-support value="same70"/>
 		<device-support value="samr30"/>
 		<device-support value="samr34"/>
+		<device-support value="wlr089"/>
 		<require idref="common.drivers.usb.device"/>
 		<require idref="common.services.usb.protocol"/>
 		<generator value="doxygen-module" default-mcu="unspecified-uc3a"/>

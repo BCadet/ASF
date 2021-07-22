@@ -2,9 +2,9 @@
  *
  * \file
  *
- * \brief SAM4S WINC3400 configuration.
+ * \brief WINC3400 configuration.
  *
- * Copyright (c) 2018-2019 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *

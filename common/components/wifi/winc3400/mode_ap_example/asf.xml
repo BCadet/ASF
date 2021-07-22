@@ -36,12 +36,12 @@
 			<device-support value="sam4s"/>
 			<device-support value="samg55"/>
 			<device-support value="same70"/>
-
+			
 			<!-- Required modules -->
 			<require idref="common.components.wifi.winc3400"/>
 			<require idref="common.services.basic.clock"/>
-			<require idref="common.utils.stdio.stdio_serial"/>
+			<require idref="common.utils.stdio.stdio_serial"/>	
 			<info type="gui-flag" value="move-to-root"/>
-		</module>
+		</module>		
 	</select-by-device>
 </asf>

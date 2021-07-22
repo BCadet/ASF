@@ -292,6 +292,21 @@
 			<device-support value="samr35jxxb"/>
 			<device-support value="unspecified-samr35"/>
 		</module>
+		<!-- WLR089 variant //-->
+		<module type="driver" id="sam0.utils#20" caption="WLR089 compiler driver">
+			<info type="description" value="summary">
+			Compiler abstraction layer and code utilities for WLR089 devices. This module provides various abstraction layers and utilities to make code compatible between different compilers. It also contains utilities typically used while pre-processing code.
+			</info>
+			<require idref="sam0.utils.common"/>
+			<require idref="sam0.utils.cmsis.wlr089.include"/>
+			<require idref="sam0.utils.cmsis.wlr089.include.component"/>
+			<require idref="sam0.utils.cmsis.wlr089.include.instance"/>
+			<require idref="sam0.utils.cmsis.wlr089.include.pio"/>
+			<require idref="sam0.utils.cmsis.wlr089.source.template"/>
+			<info type="gui-flag" value="hidden"/>
+			<device-support value="wlr089u0"/>
+			<device-support value="unspecified-wlr089"/>
+		</module>
 		
 	</select-by-device>
 </asf>

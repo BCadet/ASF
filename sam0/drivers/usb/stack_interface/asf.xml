@@ -11,6 +11,7 @@
 		<device-support value="saml22" />
 		<device-support value="samr30" />
 		<device-support value="samr34"/>
+		<device-support value="wlr089"/>
 		<require idref="sam0.utils"/>
 		<require idref="sam0.drivers.system"/>
 		<require idref="sam0.drivers.extint"/>
@@ -32,6 +33,7 @@
 		<device-support value="samda1"/>
 		<device-support value="samr30" />
 		<device-support value="samr34"/>
+		<device-support value="wlr089"/>
 		<require idref="sam0.drivers.usb"/>
 		<require idref="sam0.drivers.usb.dual"/>
 		<require idref="common.services.basic.sleepmgr"/>
@@ -54,6 +56,7 @@
 		<device-support value="samda1"/>
 		<device-support value="samr30" />
 		<device-support value="samr34"/>
+		<device-support value="wlr089"/>
 		<require idref="sam0.drivers.usb"/>
 		<require idref="sam0.drivers.usb.dual"/>
 		<require idref="common.services.basic.sleepmgr"/>

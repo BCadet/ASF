@@ -1,5 +1,5 @@
 <asf xmlversion="1.0">
-	<project caption="WINC3400 Provisioning and Battery Application - SAME70 XPlained Pro" id="common.components.wifi.winc3400.provision_and_battery_example.same70_xplained_pro" force-caption="true" force-description="true">
+	<project caption="Provisioning and Battery Application - for SAME70 XPlained Pro" id="common.components.wifi.winc3400.provision_and_battery_example.same70_xplained_pro">
 		<!-- Summary Description -->
 		<info type="description" value="summary">
 		Provisioning and Battery Application for BLE stack.

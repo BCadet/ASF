@@ -80,6 +80,7 @@ miwi_status_t dataStatus;
 uint8_t dataHandle = 0;
 uint8_t* dataPointer = NULL;
 DataConf_callback_t dataConfCallback = NULL;
+
 /************************************************************************************
  * Function:
  *      bool MiMAC_SetAltAddress(uint8_t *Address, uint8_t *PANID)
@@ -633,7 +634,7 @@ bool MiMAC_Init(MACINIT_PARAM initValue)
      *      None
      *
      *****************************************************************************************/
-uint8_t packet[128];//temp buffer
+
 bool MiMAC_SendPacket( MAC_TRANS_PARAM transParam,
          uint8_t *MACPayload,
          uint8_t MACPayloadLen, uint8_t msghandle,
@@ -642,9 +643,8 @@ bool MiMAC_SendPacket( MAC_TRANS_PARAM transParam,
     uint8_t headerLength;
     uint8_t loc = 0;
     uint8_t i = 0;
+	uint8_t packet[128];
 	uint8_t frameControl = 0;
-	PHY_DataReq_t phyDataRequest;
-
 	#ifndef TARGET_SMALL
 		bool IntraPAN;
 	#endif
@@ -871,12 +871,8 @@ if (transParam.flags.bits.secEn)
 	dataConfCallback = ConfCallback;
     dataHandle = msghandle;
 
-    phyDataRequest.polledConfirmation = false;
-    phyDataRequest.confirmCallback = PHY_DataConf;
-    phyDataRequest.data = packet;
-
     // Now Trigger the Transmission of packet
-    PHY_DataReq(&phyDataRequest);
+    PHY_DataReq(packet);
     return true;
 }
 

@@ -6,14 +6,9 @@
 		</info>
 		<build type="c-source" value="main.c"/>
 		<build type="c-source" value="enddevice_demo.c"/>
-		<build type="c-source" value="enddevice_cert.c"/>
 		<build type="include-path" value="."/>
 		<build type="header-file" value="enddevice_demo.h"/>
-		<build type="header-file" value="enddevice_cert.h"/>
-		<build type="header-file" value="conf_certification.h"/>	
-		<build subtype="required-header-file" type="module-config" value="conf_certification.h" />
 		<build type="module-config" subtype="path" value="."/>
-		<build type="define" name="CERT_APP" value="1"/>
 		<build subtype="required-header-file" type="module-config" value="conf_app.h" />
 		<build subtype="required-header-file" type="module-config" value="conf_sw_timer.h" />
 		<build subtype="required-header-file" type="module-config" value="conf_resource.h" />

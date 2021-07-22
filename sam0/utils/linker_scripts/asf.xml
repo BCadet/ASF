@@ -731,6 +731,18 @@
 			<device-support value="atsamr35j16b"/>
 		</module>
 
+		<module type="build-specific" caption="Linker script for WLR089U0" id="sam0.utils.linker_scripts#wlr089u0">
+			<info type="description" value="summary">
+			Linker script for the WLR089U0 device.
+			</info>
+			<build type="linker-config" subtype="script" value="wlr089/gcc/wlr089u0_flash.ld" toolchain="armgcc"/>
+			<build type="linker-config" subtype="aux-script" value="wlr089/gcc/wlr089u0_sram.ld" toolchain="armgcc"/>
+			<build type="linker-config" subtype="script" value="wlr089/iar/wlr089u0_flash.icf" toolchain="iarewarm"/>
+			<build type="linker-config" subtype="aux-script" value="wlr089/iar/wlr089u0_sram.icf" toolchain="iarewarm"/>
+			<device-support value="wlr089u0"/>
+		</module>
+		
+		
 		<module type="build-specific" caption="Linker script for SAMD09C13A" id="sam0.utils.linker_scripts#atsamd09c13a">
 			<info type="description" value="summary">
 			Linker script for the SAMD09C13 device.

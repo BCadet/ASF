@@ -3,7 +3,7 @@
 *
 * \brief Memory Buffer handling for MiWi Protocol implementation
 *
-* Copyright (c) 2018 - 2019 Microchip Technology Inc. and its subsidiaries. 
+* Copyright (c) 2018 Microchip Technology Inc. and its subsidiaries. 
 *
 * \asf_license_start
 *
@@ -90,7 +90,7 @@ void MiMem_Init(void)
 }
 
 /*********************************************************************
-* Function:         void* MiMem_Alloc(uint8_t size)
+* Function:         uint8_t* MiMem_Alloc(uint8_t size)
 *
 * PreCondition:     none
 *
@@ -105,7 +105,7 @@ void MiMem_Init(void)
 *
 * Note:			    none
 ********************************************************************/
-void* MiMem_Alloc(uint8_t size)
+uint8_t* MiMem_Alloc(uint8_t size)
 {
 	size_t requestedSize = 0U;
 	void* requestedMemPtr = NULL;

@@ -7,7 +7,7 @@
         <build type="header-file"   value="edbg_eui.h"/>
 
 		<require idref="sam0.drivers.sercom.i2c.master"/>
-		<build type="define" name="EDBG_EUI_READ" value="1"/>
+		<build type="define" name="EDBG_EUI_READ" value="0"/>
 		<device-support-alias value="lorawan_support"/>
 	</module>
 </asf>

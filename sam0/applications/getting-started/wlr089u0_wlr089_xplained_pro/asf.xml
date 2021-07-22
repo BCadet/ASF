@@ -1,0 +1,17 @@
+<asf xmlversion="1.0">
+	<project caption="Getting Started for WLR089 Xplained Pro" id="sam0.applications.getting-started.wlr089_xplained_pro">
+		<build type="include-path" value="."/>
+		<build type="header-file" value="conf_board.h"/>
+		<build type="header-file" value="conf_clocks.h"/>
+		<build type="header-file" value="conf_uart_serial.h"/>
+		<build type="header-file" value="conf_extint.h"/>
+
+		<build type="include-path" value="."/>
+		<require idref="sam0.applications.getting-started"/>
+		<require idref="board.wlr089_xplained_pro"/>
+		<generator value="armgcc"/>
+		<generator value="as5_arm"/>
+		<generator value="doxygen"/>
+		<device-support value="wlr089u0"/>
+	</project>
+</asf>
