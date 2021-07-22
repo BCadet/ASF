@@ -1,0 +1,63 @@
+<asf xmlversion="1.0">
+	<module type="component" id="thirdparty.wireless.services.cryptoauthlib" caption="CryptoAuthLib Module">
+		<info type="description" value="summary">
+		Crypto Authentication Library module for ECC508A/608A
+		</info>
+        <info type="gui-flag" value="hidden"/>
+		
+		<build type="header-file"   value="atca_bool.h"/>
+		<build type="header-file"   value="atca_cfgs.h"/>
+		<build type="header-file"   value="atca_command.h"/>
+		<build type="header-file"   value="atca_compiler.h"/>
+		<build type="header-file"   value="atca_device.h"/>
+		<build type="header-file"   value="atca_devtypes.h"/>	
+		<build type="header-file"   value="atca_iface.h"/>
+		<build type="header-file"   value="atca_execution.h"/>
+		<build type="header-file"   value="atca_status.h"/>
+		<build type="header-file"   value="cryptoauthlib.h"/>		
+		<build type="include-path"  value="."/>		
+		<build type="c-source"      value="atca_cfgs.c"/>
+		<build type="c-source"      value="atca_command.c"/>
+		<build type="c-source"      value="atca_device.c"/>
+		<build type="c-source"      value="atca_iface.c"/>
+		<build type="c-source"      value="atca_execution.c"/>
+		
+		<build type="header-file"   value="atca_basic.h"/>
+		<build type="header-file"   value="atca_helpers.h"/>
+		<build type="include-path"  value="."/>		
+		<build type="c-source"      value="atca_basic.c"/>
+		<build type="c-source"      value="atca_basic_aes.c"/>
+		<build type="c-source"      value="atca_basic_checkmac.c"/>
+		<build type="c-source"      value="atca_basic_counter.c"/>
+		<build type="c-source"      value="atca_basic_derivekey.c"/>
+		<build type="c-source"      value="atca_basic_ecdh.c"/>
+		<build type="c-source"      value="atca_basic_gendig.c"/>
+		<build type="c-source"      value="atca_basic_genkey.c"/>
+		<build type="c-source"      value="atca_basic_hmac.c"/>
+		<build type="c-source"      value="atca_basic_info.c"/>
+		<build type="c-source"      value="atca_basic_kdf.c"/>
+		<build type="c-source"      value="atca_basic_lock.c"/>
+		<build type="c-source"      value="atca_basic_mac.c"/>
+		<build type="c-source"      value="atca_basic_nonce.c"/>
+		<build type="c-source"      value="atca_basic_privwrite.c"/>
+		<build type="c-source"      value="atca_basic_random.c"/>		
+		<build type="c-source"      value="atca_basic_read.c"/>
+		<build type="c-source"      value="atca_basic_secureboot.c"/>
+		<build type="c-source"      value="atca_basic_selftest.c"/>
+		<build type="c-source"      value="atca_basic_sha.c"/>
+		<build type="c-source"      value="atca_basic_sign.c"/>
+		<build type="c-source"      value="atca_basic_updateextra.c"/>
+		<build type="c-source"      value="atca_basic_verify.c"/>
+		<build type="c-source"      value="atca_basic_write.c"/>
+		<build type="c-source"      value="atca_helpers.c"/>
+		
+		<build type="module-config" subtype="required-header-file" value="conf_atcad.h"/>
+		<build type="module-config" subtype="path" value="module_config"/>
+		
+		<require idref="thirdparty.wireless.services.cryptoauthlib.hal"/>
+		<require idref="thirdparty.wireless.services.cryptoauthlib.host"/>
+		<require idref="thirdparty.wireless.services.cryptoauthlib.crypto"/>
+
+		<device-support value="samr34"/>
+	</module>
+</asf>

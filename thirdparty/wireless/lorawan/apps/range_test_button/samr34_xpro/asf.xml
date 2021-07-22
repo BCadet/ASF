@@ -19,6 +19,7 @@
        <build type="header-file" value="conf_app.h"/>
         <build type="header-file" value="conf_resource.h"/>
         <build type="header-file" value="conf_sw_timer.h"/>
+        <build type="header-file" value="conf_sal.h"/>
         
        
         

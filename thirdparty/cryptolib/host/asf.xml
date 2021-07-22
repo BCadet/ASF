@@ -1,0 +1,12 @@
+<asf xmlversion="1.0">
+	<module type="component" id="thirdparty.wireless.services.cryptoauthlib.host" caption="CryptoAuthLib Host Layer">
+		<info type="description" value="summary">
+		Crypto Authentication Library Host Layer for ECC508A/608A
+		</info>
+        <info type="gui-flag" value="hidden"/>
+		<build type="header-file"   value="atca_host.h"/>
+		<build type="include-path"  value="."/>		
+		<build type="c-source"      value="atca_host.c"/>
+		<device-support-alias value="lorawan_support"/>		
+	</module>
+</asf>

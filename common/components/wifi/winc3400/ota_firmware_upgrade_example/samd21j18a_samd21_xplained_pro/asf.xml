@@ -1,5 +1,5 @@
 <asf xmlversion="1.0">
-	<project caption="WINC3400 OTA Firmware Upgrade Example for SAMD21 XPlained Pro" id="common.components.wifi.winc3400.ota_firmware_upgrade_example.samd21_xplained_pro">
+	<project caption="WINC3400 OTA Firmware Upgrade Example - SAMD21 XPlained Pro" id="common.components.wifi.winc3400.ota_firmware_upgrade_example.samd21_xplained_pro" force-caption="true" force-description="true">
 		<!-- Summary Description -->
 		<info type="description" value="summary">
 			This example demonstrates how to perform an Over-The-Air (OTA) firmware upgrade for the WINC3400 Wi-Fi module.

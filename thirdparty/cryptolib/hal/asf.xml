@@ -1,0 +1,19 @@
+<asf xmlversion="1.0">
+	<select-by-device id="thirdparty.wireless.services.cryptoauthlib.hal" caption="CryptoAuthLib HAL Layer">
+		<module type="meta" id="thirdparty.wireless.services.cryptoauthlib.hal#samr34"     caption=" CryptoAuthLib HAL Layer for SAMR34">
+			<info type="description" value="summary">
+			Crypto Authentication Library HAL Layer
+			</info>
+			<info type="gui-flag" value="hidden"/>
+			<build type="header-file"   value="atca_hal.h"/>
+			<build type="header-file"   value="hal_samr34_i2c_asf.h"/>
+			<build type="include-path"  value="."/>		
+			<build type="c-source"      value="atca_hal.c"/>
+			<build type="c-source"      value="hal_samr34_i2c_asf.c"/>
+			<build type="c-source"      value="hal_samr34_timer_asf.c"/>
+			<require idref="sam0.drivers.sercom.i2c.master"/>
+			<build type="define" name="ATCA_HAL_I2C" value=""/>
+			<device-support value="samr34"/>		
+		</module>
+	</select-by-device>
+</asf>

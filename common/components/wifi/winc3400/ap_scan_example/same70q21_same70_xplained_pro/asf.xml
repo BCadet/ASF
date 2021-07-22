@@ -1,5 +1,5 @@
 <asf xmlversion="1.0">
-	<project caption="WINC3400 AP Scan Example for SAME70 XPlained Pro" id="common.components.wifi.winc3400.ap_scan_example.same70_xplained_pro">
+	<project caption="WINC3400 AP Scan Example - SAME70 XPlained Pro" id="common.components.wifi.winc3400.ap_scan_example.same70_xplained_pro" force-caption="true" force-description="true">
 		<!-- Summary Description -->
 		<info type="description" value="summary">
 			This example demonstrates how to scan for Access Point (AP) using the WINC3400 Wi-Fi module.

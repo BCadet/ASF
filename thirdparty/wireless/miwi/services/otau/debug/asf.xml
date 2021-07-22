@@ -1,0 +1,14 @@
+<asf xmlversion="1.0">
+	<module type="meta" id="thirdparty.wireless.miwi.services.otau.debug" caption="OTAU Debug Module">
+		<info type="description" value="summary">
+		</info>
+		<build type="c-source"      value="server_debug.c"/>
+		<build type="header-file"   value="server_debug.h"/>
+		<build type="c-source"      value="client_debug.c"/>
+		<build type="header-file"   value="client_debug.h"/>
+		<build type="header-file"   value="otau_debug.h"/>
+		<build type="include-path"  value="."/>
+		<device-support-alias value="miwi_support"/>
+		<build type="doxygen-entry-point" value="group_otau_debug"/>
+	</module>
+</asf>

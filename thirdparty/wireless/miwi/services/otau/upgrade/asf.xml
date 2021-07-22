@@ -1,5 +1,5 @@
 <asf xmlversion="1.0">
-	<module type="component" id="thirdparty.wireless.miwi.services.otau.upgrade" caption="OTAU Notify Module">
+	<module type="meta" id="thirdparty.wireless.miwi.services.otau.upgrade" caption="OTAU Upgrade Module">
 		<info type="description" value="summary">
 		</info>
 		<build type="c-source"      value="server_upgrade.c"/>

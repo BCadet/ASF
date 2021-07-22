@@ -1,0 +1,45 @@
+<asf xmlversion="1.0">
+	<select-by-config id="config.thirdparty.wireless.lorawan.sal" name="config.thirdparty.wireless.lorawan.sal" caption="SAL - Security Abstraction Layer" default="hw">
+		<info type="description" value="summary">
+		</info>
+		<module type="driver" id="config.thirdparty.wireless.lorawan.sal#hw" caption="SAL - Security Abstraction Layer">
+			<info type="keyword" value="technology">
+				<keyword value="Cryptography"/>
+			</info>
+			<info type="gui-flag" value="hidden"/>
+			<build type="c-source"      value="src/sal.c"/>
+			<require idref="thirdparty.wireless.lorawan.sal.inc"/>
+			<require idref="config.thirdparty.wireless.lorawan.services.aes.hw"/>	
+			<require idref="sam0.drivers.aes"/>
+			<build type="module-config" subtype="required-header-file" value="conf_sal.h"/>
+			<build type="module-config" subtype="path" value="module_config"/>
+			<device-support-alias value="lorawan_support"/>	
+		</module>
+		<module type="driver" id="config.thirdparty.wireless.lorawan.sal#sw" caption="SAL - Security Abstraction Layer">
+			<info type="keyword" value="technology">
+				<keyword value="Cryptography"/>
+			</info>
+			<info type="gui-flag" value="hidden"/>
+			<build type="c-source"      value="src/sal.c"/>
+			<require idref="thirdparty.wireless.lorawan.sal.inc"/>
+			<require idref="config.thirdparty.wireless.lorawan.services.aes.sw"/>		
+			<build type="module-config" subtype="required-header-file" value="conf_sal.h"/>
+			<build type="module-config" subtype="path" value="module_config"/>
+			<device-support-alias value="lorawan_support"/>		
+		</module>
+		<module type="driver" id="config.thirdparty.wireless.lorawan.sal#ecc608" caption="SAL - Security Abstraction Layer">
+			<info type="keyword" value="technology">
+				<keyword value="Cryptography"/>
+			</info>
+			<info type="gui-flag" value="hidden"/>
+			<build type="c-source"      value="src/sal.c"/>
+			<require idref="thirdparty.wireless.lorawan.sal.inc"/>
+			<require idref="config.thirdparty.wireless.lorawan.services.aes.hw"/>	
+			<require idref="sam0.drivers.aes"/>
+			<require idref="thirdparty.wireless.services.cryptoauthlib"/>
+			<build type="module-config" subtype="required-header-file" value="conf_sal.h"/>
+			<build type="module-config" subtype="path" value="module_config"/>
+			<device-support-alias value="lorawan_support"/>	
+		</module>
+	</select-by-config>
+</asf>

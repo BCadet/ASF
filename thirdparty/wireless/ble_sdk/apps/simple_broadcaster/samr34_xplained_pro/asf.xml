@@ -27,6 +27,7 @@
 		<build type="header-file" value="conf_regparams.h"/>
 		<build type="header-file" value="conf_pmm.h"/>
 		<build type="header-file" value="conf_spi.h"/>
+		<build type="header-file" value="conf_sal.h"/>
 
 		<require idref="board.samr34_xplained_pro"/>
 

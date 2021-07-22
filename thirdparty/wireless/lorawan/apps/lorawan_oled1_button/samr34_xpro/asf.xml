@@ -22,6 +22,7 @@
         <build type="header-file" value="conf_ssd1306.h"/>
         <build type="header-file" value="conf_sysfont.h"/>
         <build type="header-file" value="conf_menu.h"/>
+        <build type="header-file" value="conf_sal.h"/>
         <build type="define" name="EXT1_OLED1" value =""/>
         
         <require idref="thirdparty.wireless.lorawan.services.resources"/>

@@ -17,6 +17,8 @@
         <build type="header-file" value="conf_nvm.h"/>
         <build type="header-file" value="conf_resource.h"/>
 		<build type="header-file" value="conf_regparams.h"/>
+		<build type="header-file" value="conf_sal.h"/>
+
         <config name="config.sam0.drivers.aes" value="polled"/>
         <config name="config.sam0.drivers.sercom.spi" value="polled"/>
         <config name="config.sam0.drivers.sercom.usart" value="callback"/>

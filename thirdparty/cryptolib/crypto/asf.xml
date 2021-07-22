@@ -1,0 +1,23 @@
+<asf xmlversion="1.0">
+	<module type="component" id="thirdparty.wireless.services.cryptoauthlib.crypto" caption="CryptoAuthLib SW Crypto APIs Layer">
+		<info type="description" value="summary">
+		Crypto Authentication Library SW Crypto APIs Layer for ECC508A/608A
+		</info>
+        <info type="gui-flag" value="hidden"/>
+		<build type="header-file"   value="atca_crypto_sw.h"/>
+		<build type="header-file"   value="atca_crypto_sw_ecdsa.h"/>
+		<build type="header-file"   value="atca_crypto_sw_sha1.h"/>
+		<build type="header-file"   value="atca_crypto_sw_sha2.h"/>
+		<build type="header-file"   value="atca_crypto_sw_rand.h"/>
+		<build type="header-file"   value="hashes/sha1_routines.h"/>
+		<build type="header-file"   value="hashes/sha2_routines.h"/>		
+		<build type="include-path"  value="."/>		
+		<build type="c-source"      value="atca_crypto_sw_sha1.c"/>
+		<build type="c-source"      value="atca_crypto_sw_sha2.c"/>
+		<build type="c-source"      value="atca_crypto_sw_rand.c"/>
+		<build type="c-source"      value="hashes/sha1_routines.c"/>
+		<build type="c-source"      value="hashes/sha2_routines.c"/>
+		<build type="c-source"      value="atca_crypto_sw_ecdsa.c"/>
+		<device-support-alias value="lorawan_support"/>		
+	</module>
+</asf>
