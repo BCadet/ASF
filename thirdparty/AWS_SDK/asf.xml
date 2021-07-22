@@ -35,7 +35,7 @@
 
 			<build type="c-source" value="AWS_SDK\aws_iot_src\protocol\mqtt\aws_iot_embedded_client_wrapper\aws_iot_mqtt_embedded_client_wrapper.c"/>
 			<build type="c-source" value="AWS_SDK\aws_iot_src\protocol\mqtt\aws_iot_embedded_client_wrapper\platform\common\timer.c"/>
-			<build type="c-source" value="AWS_SDK\aws_iot_src\protocol\mqtt\aws_iot_embedded_client_wrapper\platform\network_winc1500tls_wrapper.c"/>
+			<!-- <build type="c-source" value="AWS_SDK\aws_iot_src\protocol\mqtt\aws_iot_embedded_client_wrapper\platform\network_winc1500tls_wrapper.c"/> -->
 			<build type="c-source" value="AWS_SDK\aws_iot_src\shadow\aws_iot_shadow.c"/>
 			<build type="c-source" value="AWS_SDK\aws_iot_src\shadow\aws_iot_shadow_actions.c"/>
 			<build type="c-source" value="AWS_SDK\aws_iot_src\shadow\aws_iot_shadow_json.c"/>

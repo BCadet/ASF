@@ -1,5 +1,5 @@
 <asf xmlversion="1.0">
-	<project caption="WINC3400 SSL Connect Example for SAMD21 XPlained Pro" id="common.components.wifi.winc3400.ssl_connect_example.samd21_xplained_pro">
+	<project caption="WINC3400 SSL Connect Example - SAMD21 XPlained Pro" id="common.components.wifi.winc3400.ssl_connect_example.samd21_xplained_pro">
 		<!-- Summary Description -->
 		<info type="description" value="summary">
 			This example demonstrates how to connect to a server via Secure Socket Layer (SSL) using the WINC3400 Wi-Fi module.

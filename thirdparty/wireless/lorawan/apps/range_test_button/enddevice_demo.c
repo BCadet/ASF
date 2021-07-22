@@ -294,6 +294,9 @@ static SYSTEM_TaskStatus_t buttonTask(void)
 	uint8_t rate;
 	uint8_t pIndex;
 	uint8_t band;
+    uint8_t CurrentMinDataRate;
+    uint8_t CurrentMaxDataRate;
+    MinMaxDr_t CurrentMinMaxDr;
 
 	switch(appTaskState)
 	{
@@ -305,8 +308,12 @@ static SYSTEM_TaskStatus_t buttonTask(void)
 		case LONGBUTTON_PRESS_STATE:				// Long Button press to adjust the current DataRate setting
 			status = LORAWAN_GetAttr(CURRENT_DATARATE, 0, &rate);
 			rate++;			// adjust rate ( increment)
+			
+			LORAREG_GetAttr(MIN_MAX_DR,NULL,&(CurrentMinMaxDr));
+			CurrentMinDataRate = CurrentMinMaxDr.minDr;
+			CurrentMaxDataRate = CurrentMinMaxDr.maxDr;
 			// ck for NA region
-			if(rate > RegParams.minDataRate)
+			if(rate > CurrentMaxDataRate)
 				rate = 0;	// force rate back to DR0
 
 			status = 0;
@@ -320,7 +327,7 @@ static SYSTEM_TaskStatus_t buttonTask(void)
 				}
 				else
 				{ // added check for EU region where max data rate is based upon channel
-					rate = RegParams.maxDataRate;  // force back to lowest data rate setting
+					rate = CurrentMinDataRate;  // force back to current lowest data rate setting
 				}
 			}while(status != LORAWAN_SUCCESS);
 
