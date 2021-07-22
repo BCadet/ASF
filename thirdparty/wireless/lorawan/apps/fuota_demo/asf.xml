@@ -1,0 +1,31 @@
+<asf xmlversion="1.0">
+
+	<module type="application" id="thirdparty.wireless.lorawan.apps.fuota_demo" caption="FUOTA Demo Application">
+		<info type="description" value="summary">
+		Application demonstrate FUOTA over Microchip LoRaWAN Stack
+		</info>
+		<info type="keyword" value="technology">
+			<keyword value="Wireless"/>
+			<keyword value="Communication"/>
+		</info>
+		<info type="gui-flag" value="move-to-root"/>
+
+        <!-- Application configuration header is mandatory -->
+        <build subtype="required-header-file" type="module-config" value="conf_app.h" />
+
+        <!-- Common application logic -->
+	    <build type="c-source" value="main.c"/>
+
+        <!-- MICROCHIP LORAWAN Stack -->
+        <require idref="thirdparty.wireless.lorawan"/>
+
+        <!-- Serial I/O support -->
+		<require idref="thirdparty.wireless.addons.sio2host"/>
+
+        <!-- Support to read EUI from EDBG -->
+        <require idref="thirdparty.wireless.lorawan.services.edbg_eui"/>
+
+        <!-- Target platforms -->
+		<device-support-alias value="lorawan_support"/>
+	</module>
+</asf>

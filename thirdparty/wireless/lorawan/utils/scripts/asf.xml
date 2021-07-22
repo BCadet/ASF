@@ -1,0 +1,10 @@
+<asf xmlversion="1.0">
+	<module type="meta" id="thirdparty.wireless.lorawan.utils.prepareimagescript"   caption="FUOTA utility script">
+		<info type="description" value="summary">
+		</info>
+		<info type="gui-flag" value="move-to-root"/>
+		<build type="distribute" subtype="user-file" value="prepare_image.py"/>
+        <device-support value="atsamr34j18b"/>
+	</module>
+</asf>
+

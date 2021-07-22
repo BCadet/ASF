@@ -1,0 +1,11 @@
+<asf xmlversion="1.0">
+	<module type="component" id="thirdparty.wireless.lorawan.apps.packages.ftm_package.inc" caption="Fragemented data-block transport package">
+		<info type="description" value="summary">
+		Fragemented data-block transport package add-on to LoRaWAN application
+		</info>
+		<info type="gui-flag" value="hidden"/>
+		<build type="include-path"  value="."/>
+		<build type="header-file"   value="FTMPackageCore.h"/>
+		<device-support-alias value="lorawan_support"/>
+	</module>
+</asf>

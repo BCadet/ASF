@@ -1,0 +1,15 @@
+<asf xmlversion="1.0">
+	<module type="component" id="thirdparty.wireless.lorawan.apps.packages.common.src" caption="Common helper modules for application">
+		<info type="description" value="summary">
+		Support package to handle LoRaWAN message transactions
+		</info>
+		<info type="gui-flag" value="hidden"/>
+		<build type="c-source"      value="msg.c"/>
+		<build type="c-source"      value="long_timer.c"/>
+		<build type="c-source"      value="fuota_nvm.c"/>
+       <require idref="thirdparty.wireless.lorawan.apps.packages.common.inc"/>
+       <require idref="thirdparty.wireless.lorawan"/>
+       <build subtype="required-header-file" type="module-config" value="conf_app.h" />
+		<device-support-alias value="lorawan_support"/>
+	</module>
+</asf>

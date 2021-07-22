@@ -1,0 +1,11 @@
+<asf xmlversion="1.0">
+    <module type="component" id="thirdparty.wireless.lorawan.apps.packages.dm_package.inc" caption="Device/firmware management package">
+        <info type="description" value="summary">
+            Device/firmware management package add-on to LoRaWAN application
+        </info>
+        <info type="gui-flag" value="hidden"/>
+        <build type="include-path"  value="."/>
+        <build type="header-file"   value="DMPackageCore.h"/>
+        <device-support-alias value="lorawan_support"/>
+    </module>
+</asf>

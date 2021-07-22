@@ -3,6 +3,7 @@
 			<info type="description" value="summary">
 		     LoRaWAN Stack
 			</info>
+			<require idref="thirdparty.wireless.lorawan.doc"/>
 			<require idref="thirdparty.wireless.lorawan.inc"/>
 			<require idref="thirdparty.wireless.lorawan.hal"/>
 			<require idref="thirdparty.wireless.lorawan.sys"/>

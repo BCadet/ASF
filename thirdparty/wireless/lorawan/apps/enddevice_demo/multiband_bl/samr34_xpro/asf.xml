@@ -29,7 +29,8 @@
 		<require idref="thirdparty.wireless.lorawan.services.edbg_eui"/>
         <config name="config.sam0.drivers.rtc" value="count_callback"/>
         <require idref="thirdparty.wireless.lorawan.apps.enddevice_certification_src"/>
-        <require idref="thirdparty.wireless.lorawan.utils.bootloader"/>		
+        <require idref="thirdparty.wireless.utils.bootloadertool"/>		
+        <require idref="thirdparty.wireless.lorawan.utils.lorawanbootloader"/>		
         <config name="config.compiler.armgcc.optimization" value="size" />
         <toolchain-config name="armgcc.linker.general.UseNewlibNano" value="false" toolchain="armgcc"/>
         <generator value="armgcc" />

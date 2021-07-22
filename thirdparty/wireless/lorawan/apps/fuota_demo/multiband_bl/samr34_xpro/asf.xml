@@ -1,0 +1,69 @@
+<asf xmlversion="1.0">
+    <project caption="MLS Sample Application" id="thirdparty.wireless.lorawan.apps.fuota_demo.multiband_bl.samr34_xpro" force-caption="true" force-description="true">
+        <info type="description" value="summary">
+        FUOTA Demo application with LORAWAN and FUOTA packages as LIBRARY. This WILL require bootloader.
+        </info>
+        <!-- Application configuration files -->
+        <build type="include-path" value="."/>
+        <build type="header-file" value="conf_app.h"/>
+        <build type="header-file" value="conf_board.h"/>
+        <build type="header-file" value="conf_clocks.h"/>
+        <build type="header-file" value="conf_extint.h"/>
+        <build type="header-file" value="conf_sio2host.h"/>
+        <build type="header-file" value="conf_spi.h"/>
+        <build type="header-file" value="conf_sw_timer.h"/>
+        <build type="header-file" value="conf_rtc.h"/>
+        <build type="header-file" value="conf_pmm.h"/>
+        <build type="header-file" value="conf_hw_timer.h"/>
+        <build type="header-file" value="conf_nvm.h"/>
+		<build type="header-file" value="conf_regparams.h"/>
+		<build type="header-file" value="conf_sal.h"/>
+
+        <!-- Peripherals -->
+        <config name="config.sam0.drivers.aes" value="polled"/>
+        <config name="config.sam0.drivers.sercom.spi" value="polled"/>
+        <config name="config.sam0.drivers.sercom.usart" value="callback"/>
+        <config name="config.sam0.drivers.rtc" value="count_callback"/>
+
+        <!-- Board support -->
+        <require idref="board.samr34_xplained_pro"/>
+
+        <!-- Common application dependencies -->
+        <require idref="thirdparty.wireless.lorawan.apps.fuota_demo"/>
+
+        <!-- Logger for application -->
+        <require idref="thirdparty.wireless.services.log"/>
+        <build type="define" name="LOG_LEVEL" value="ERROR"/>
+
+        <!-- Regional Parameters for multiple bands -->
+        <config name="config.thirdparty.wireless.lorawan.reg.band" value="multi_band"/>
+
+        <!-- Rapid Network Acquisition for US915 and AU915 bands -->
+		<config name="config.thirdparty.wireless.lorawan.regparams.multiband.rna" value="disabled"/>
+
+        <!-- FUOTA Packages as LIBRARY -->
+        <require idref="thirdparty.wireless.lorawan.apps.packages.fuota_lib"/>
+
+        <!-- Dependencies of FUOTA Packages as SOURCE -->
+        <require idref="thirdparty.wireless.lorawan.apps.packages.common.src"/>
+
+        <!-- Linker script and bootloader executables -->
+        <require idref="thirdparty.wireless.utils.bootloadertool"/>
+        <require idref="thirdparty.wireless.lorawan.utils.lorawanbootloader"/>
+        
+        <!-- FUOTA image preparation script -->
+        <require idref="thirdparty.wireless.lorawan.utils.prepareimagescript"/>
+
+        <!-- Toolchain settings -->
+        <config name="config.compiler.armgcc.optimization" value="size" />
+
+        <!-- Project generator settings -->
+        <generator value="armgcc" />
+        <generator value="as5_arm" />
+        <generator value="doxygen"/>
+
+        <!-- Target platforms -->
+        <device-support value="atsamr34j18b"/>
+    </project>
+</asf>
+

@@ -1,0 +1,15 @@
+<asf xmlversion="1.0">
+	<module type="component" id="thirdparty.wireless.lorawan.apps.packages.fuota_lib" caption="FUOTA packages library">
+		<info type="description" value="summary">
+		FUOTA packages library
+		</info>
+		<info type="gui-flag" value="hidden"/>
+		<build type="include-path"  value="."/>
+        <require idref="thirdparty.wireless.lorawan.apps.packages.dm_package.inc"/>
+        <require idref="thirdparty.wireless.lorawan.apps.packages.mcm_package.inc"/>
+        <require idref="thirdparty.wireless.lorawan.apps.packages.ftm_package.inc"/>
+        <require idref="thirdparty.wireless.lorawan.apps.packages.utils.inc"/>        
+        <build subtype="user" toolchain="armgcc" type="library" value="sam0/gcc/libFUOTAPACKAGE_SAM0_GCC.a" />
+		<device-support-alias value="lorawan_support"/>
+	</module>
+</asf>

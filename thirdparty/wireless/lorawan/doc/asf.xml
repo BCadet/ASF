@@ -3,7 +3,7 @@
 		<info type="description" value="summary">
 		</info>
 		<info type="gui-flag" value="move-to-root"/>
-		<build type="distribute" subtype="user-file" value="MLS Migration Guide.pdf"/>
+		<build type="distribute" subtype="user-file" value="MLS_Migration_Guide.pdf"/>
 		<device-support-alias value="lorawan_support"/>
 	</module>
 	

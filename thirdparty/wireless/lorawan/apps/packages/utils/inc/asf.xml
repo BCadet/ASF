@@ -1,0 +1,11 @@
+<asf xmlversion="1.0">
+	<module type="component" id="thirdparty.wireless.lorawan.apps.packages.utils.inc" caption="Application protocol package utilities">
+		<info type="description" value="summary">
+		Application protocol package utilities add-on to LoRaWAN application
+		</info>
+		<info type="gui-flag" value="hidden"/>
+		<build type="include-path"  value="."/>
+		<build type="header-file"   value="storage.h"/>
+		<device-support-alias value="lorawan_support"/>
+	</module>
+</asf>
