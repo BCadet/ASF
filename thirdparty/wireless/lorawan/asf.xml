@@ -13,6 +13,7 @@
 			<require idref="thirdparty.wireless.lorawan.services.sw_timer"/>
 			<require idref="config.thirdparty.wireless.lorawan.services.aes"/>
 			<require idref="config.thirdparty.wireless.lorawan"/>
+			<require idref="thirdparty.wireless.lorawan.doc"/>
 
 			<device-support-alias value="lorawan_support"/>
 

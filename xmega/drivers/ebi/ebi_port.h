@@ -231,7 +231,7 @@ static inline void ebi_setup_port(uint8_t addr_bits, uint8_t sram_ale,
 	}
 
 	if (lpc_ale > 0) {
-		mode |= ((lpc_ale - 1) << EBI_LPCMODE_gp);
+		mode |= (lpc_ale << EBI_LPCMODE_gp);
 	}
 
 	/* 8-bit SDRAM requires 4-port EBI, which we don't have. */

@@ -12,7 +12,8 @@
 		<build type="c-source"      value="src/lorawan_mband_in.c"/>
 		<build type="c-source"      value="src/lorawan_mband_jp.c"/>
 		<build type="c-source"      value="src/lorawan_mband_kr.c"/>
-		<require idref="thirdparty.wireless.lorawan.regparams.multiband.inc"/>				
+		<require idref="thirdparty.wireless.lorawan.regparams.multiband.inc"/>
+		<require idref="config.thirdparty.wireless.lorawan.regparams.multiband.rna"/>		
 		<build type="define" name="EU_BAND" value="1"/>
 		<build type="define" name="NA_BAND" value="1"/>
 		<build type="define" name="AU_BAND" value="1"/>
@@ -22,5 +23,22 @@
 		<build type="define" name="IND_BAND" value="1"/>
 		<device-support-alias value="lorawan_support"/>		
 	</module>
-	
+	<select-by-config id="config.thirdparty.wireless.lorawan.regparams.multiband.rna" name="config.thirdparty.wireless.lorawan.regparams.multiband.rna" caption="Random Network Acquisition" default="enabled">
+		<module type="meta" id="config.thirdparty.wireless.lorawan.regparams.multiband.rna#enabled"     caption="Enable RNA">
+            <info type="description" value="summary">
+            Random Network Acquisition
+            </info>
+            <info type="gui-flag" value="hidden"/>
+            <build type="define" name="RANDOM_NW_ACQ" value="1"/>
+	        <device-support-alias value="lorawan_support"/>	
+        </module>
+		<module type="meta" id="config.thirdparty.wireless.lorawan.regparams.multiband.rna#disabled"     caption="Disable RNA">
+            <info type="description" value="summary">
+            Random Network Acquisition
+            </info>
+            <info type="gui-flag" value="hidden"/>
+            <build type="define" name="RANDOM_NW_ACQ" value="0"/>
+	        <device-support-alias value="lorawan_support"/>	
+        </module>		
+	</select-by-config>
 </asf>

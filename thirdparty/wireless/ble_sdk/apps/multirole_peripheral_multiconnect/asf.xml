@@ -6,7 +6,8 @@
 		<build type="include-path" value="."/>
 		<build type="header-file" value="multirole_peripheral_multiconnect.h"/>
 		<build type="c-source" value="multirole_peripheral_multiconnect.c"/>
-		<build type="define" name="BLE_DEVICE_ROLE" value="BLE_ROLE_ALL"/>
+		<build type="define" name="BLE_DEVICE_ROLE" value="BLE_ROLE_ALL"/>		
+		<build type="define" name="USE_SCAN_SOFT_FILTER" value=""/>
 		<require idref="thirdparty.wireless.ble_sdk.ble_profiles.find_me_locator"/>
 		<require idref="thirdparty.wireless.ble_sdk.ble_services.battery"/>
 		<build type="distribute" subtype="user-file" value="../../doc/ATBTLC1000-BluSDK-Example-Profiles-Application-User's-Guide.pdf"/>

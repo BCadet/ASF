@@ -1,5 +1,5 @@
 <asf xmlversion="1.0">
-	<project caption="Multilink-Central Application - SAM L21 Xplained Pro SAML21J18B" id="thirdparty.wireless.ble_host_sdk.apps.multilink_central.saml21_xplained_pro_b" force-caption="true" force-description="true" workspace-name="multilink_central_saml21_xplained_pro_b">
+	<project caption="Multilink-Central Application - SAM L21 Xplained Pro SAML21J18B" id="thirdparty.wireless.ble_host_sdk.apps.multilink_central.saml21_xplained_pro_b" force-caption="true" force-description="true" workspace-name="bm70_multilink_central_saml21_xplained_pro_b">
 		<info type="description" value="summary">
 		Multilink-Central Application for BLE Stack.
 		</info>	

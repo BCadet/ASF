@@ -237,7 +237,7 @@
 		User board project template for SAM4E8C.
 		</info>
 		<require idref="common.applications.user_application.user_board.common"/>
-		<require idref="board.user_board.sam4e"/>
+		<require idref="board.user_board.sam4e8c"/>
 		<generator value="as5_arm_template"/>
 		<generator value="doxygen"/>
 		<device-support value="atsam4e8c"/>
@@ -247,7 +247,7 @@
 		User board project template for SAM4E8E.
 		</info>
 		<require idref="common.applications.user_application.user_board.common"/>
-		<require idref="board.user_board.sam4e"/>
+		<require idref="board.user_board.sam4e8e"/>
 		<generator value="as5_arm_template"/>
 		<generator value="doxygen"/>
 		<device-support value="atsam4e8e"/>
@@ -257,7 +257,7 @@
 		User board project template for SAM4E8CB.
 		</info>
 		<require idref="common.applications.user_application.user_board.common"/>
-		<require idref="board.user_board.sam4e"/>
+		<require idref="board.user_board.sam4e8cb"/>
 		<generator value="as5_arm_template"/>
 		<generator value="doxygen"/>
 		<device-support value="atsam4e8cb"/>
@@ -267,7 +267,7 @@
 		User board project template for SAM4E16C.
 		</info>
 		<require idref="common.applications.user_application.user_board.common"/>
-		<require idref="board.user_board.sam4e"/>
+		<require idref="board.user_board.sam4e16c"/>
 		<generator value="as5_arm_template"/>
 		<generator value="doxygen"/>
 		<device-support value="atsam4e16c"/>
@@ -277,7 +277,7 @@
 		User board project template for SAM4E16E.
 		</info>
 		<require idref="common.applications.user_application.user_board.common"/>
-		<require idref="board.user_board.sam4e"/>
+		<require idref="board.user_board.sam4e16e"/>
 		<generator value="as5_arm_template"/>
 		<generator value="doxygen"/>
 		<device-support value="atsam4e16e"/>
@@ -287,7 +287,7 @@
 		User board project template for SAM4E16CB.
 		</info>
 		<require idref="common.applications.user_application.user_board.common"/>
-		<require idref="board.user_board.sam4e"/>
+		<require idref="board.user_board.sam4e16cb"/>
 		<generator value="as5_arm_template"/>
 		<generator value="doxygen"/>
 		<device-support value="atsam4e16cb"/>

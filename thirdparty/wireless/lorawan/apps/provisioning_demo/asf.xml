@@ -1,0 +1,41 @@
+<asf xmlversion="1.0">
+
+	<module type="application" id="thirdparty.wireless.lorawan.apps.provisioning_demo" caption="Provisioning Demo Application">
+		<info type="description" value="summary">
+		Provisioning Demo Application
+		</info>
+		<build type="define" name="BLE_DEVICE_ROLE" value="BLE_ROLE_ALL"/>
+		
+		<build type="c-source" value="lnp_service.c"/>
+		<build type="c-source" value="lrfp_service.c"/>
+		<build type="c-source" value="ble_app.c"/>
+		<build type="c-source" value="lorawan_app.c"/>
+		<build type="include-path" value="."/>
+		<build type="header-file" value="lnp_service.h"/>
+		<build type="header-file" value="lrfp_service.h"/>
+		<build type="header-file" value="ble_app.h"/>
+		
+		<build subtype="required-header-file" type="module-config" value="conf_app.h" />
+		<build subtype="required-header-file" type="module-config" value="conf_sw_timer.h" />
+		<build subtype="required-header-file" type="module-config" value="conf_resource.h" />
+        <build type="module-config" subtype="path" value="module_config"/>
+		<require idref="thirdparty.wireless.ble_sdk.ble_services.ble_manager"/>
+		<require idref="thirdparty.wireless.addons.sio2host"/>
+		<require idref="thirdparty.wireless.lorawan"/>
+		<require idref="thirdparty.wireless.lorawan.pmm"/>
+        <require idref="thirdparty.wireless.lorawan.services.pds"/>
+		<require idref="thirdparty.wireless.lorawan.services.resources"/>
+		<require idref="thirdparty.wireless.lorawan.tal.sx1276"/>
+		
+		<build type="distribute" subtype="user-file" value="./doc/LoRaWAN_Provisioning_Over_BLE_Getting_Started_Guide.pdf"/>
+		<build type="distribute" subtype="user-file" value="./android_app/MCHPLoRa.apk"/>
+		<device-support-alias value="lorawan_support"/>
+		<!-- .................................................................................................... -->
+		<info type="keyword" value="technology">
+			<keyword value="Wireless"/>
+			<keyword value="Communication"/>
+		</info>
+		<!-- **************************************************************************************************** -->
+		<info type="gui-flag" value="move-to-root"/>
+	</module>
+</asf>

@@ -1,0 +1,11 @@
+<asf xmlversion="1.0">
+	<module type="meta" id="thirdparty.wireless.lorawan.doc"   caption="MLS Documents">
+		<info type="description" value="summary">
+		</info>
+		<info type="gui-flag" value="move-to-root"/>
+		<build type="distribute" subtype="user-file" value="MLS Migration Guide.pdf"/>
+		<device-support-alias value="lorawan_support"/>
+	</module>
+	
+</asf>
+

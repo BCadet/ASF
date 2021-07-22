@@ -105,7 +105,7 @@ unsigned long abdac_get_dac_hz(volatile avr32_abdac_t *abdac,
     const unsigned long bus_hz)
 {
   volatile avr32_pm_t *pm = &AVR32_PM;
-  unsigned short div = 0;
+  unsigned short div = 1;
 
   if (pm->gcctrl[ABDAC_GCLK] & GCLK_BIT(DIVEN)) {
     div = 2 * (GCLK_BFEXT(DIV, pm->gcctrl[ABDAC_GCLK]) + 1);

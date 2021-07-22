@@ -87,5 +87,24 @@
 				<build type="module-config" subtype="path" value="sam/module_config/sam4s"/>
 				<device-support value="sam4sd32"/>
 			</module>
+			<module type="service" id="thirdparty.wireless.ble_sdk.services.console#5"     caption="console">
+				<info type="description" value="summary">
+				Console Driver
+				</info>
+				<info type="gui-flag" value="hidden" />
+				<build type="c-source"      value="sam0/console_serial.c"/>
+				<build type="header-file"   value="console_serial.h"/>
+				<build type="include-path"  value="."/>
+
+				<build type="module-config" subtype="required-header-file" value="conf_console.h"/>
+				<build type="module-config" subtype="path" value="sam0/module_config/samr34"/>
+
+				<require idref="sam0.drivers.sercom.usart"/>
+				<require idref="sam0.utils"/>
+				<require idref="sam0.utils.stdio"/>
+				<require idref="sam0.utils.stdio.stdio_serial"/>
+
+				<device-support value="samr34"/>
+			</module>
 		</select-by-device>
 </asf>

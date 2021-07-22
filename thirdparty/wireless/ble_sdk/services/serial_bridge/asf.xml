@@ -91,5 +91,24 @@
 				<build type="module-config" subtype="path" value="uart/sam/module_config/sam4s"/>
 				<device-support value="sam4sd32"/>
 			</module>
+			<module type="service" id="thirdparty.wireless.ble_sdk.services.serial_bridge#5"     caption="uart">
+				<info type="description" value="summary">
+				UART Driver
+				</info>
+				<info type="gui-flag" value="hidden" />
+				<build type="c-source"      value="uart/sam0/serial_bridge.c"/>
+				<build type="header-file"   value="uart/serial_bridge.h"/>
+				<build type="include-path"  value="uart/"/>
+
+				<require idref="sam0.drivers.sercom.usart"/>
+				<require idref="sam0.utils"/>
+				<require idref="common2.services.delay"/>
+				<require idref="thirdparty.wireless.ble_sdk.services.serial_fifo"/>
+
+				<build type="module-config" subtype="required-header-file" value="conf_serialbridge.h"/>
+				<build type="module-config" subtype="path" value="uart/sam0/module_config/samr34"/>
+
+				<device-support value="samr34"/>
+			</module>			
 		</select-by-device>
 </asf>

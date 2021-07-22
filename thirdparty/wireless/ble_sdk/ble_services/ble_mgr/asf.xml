@@ -7,11 +7,11 @@
 		<build type="define" name="HOST_UART_BAUDRATE_CONFIG_VALUE" value="921600"/>
 		<build type="define" name="HOST_SLEEP_ENABLE" value="true"/>
 		<build type="define" name="SLEEP_WALKING_ENABLED" value="false"/>
-		<build type="define" name="BLE_MODULE" value="BTLC1000_MR" />
+		<build type="define" name="BLE_MODULE" value="BTLC1000_ZR" />
 
   		<build type="header-file"   value="ble_manager.h"/>
-  		<build type="c-source"      value="ble_manager.c"/>				
-		
+  		<build type="c-source"      value="ble_manager.c"/>
+
   		<require idref="thirdparty.wireless.ble_sdk.lib"/>
 		<require idref="thirdparty.wireless.ble_sdk.inc"/>
 		<require idref="thirdparty.wireless.ble_sdk.src"/>

@@ -496,10 +496,12 @@ int convolution(int *size)
   CHECK_CONDITIONS(VECT1_SIZE >= (VECT2_SIZE + VECT3_SIZE - 1))
   CHECK_CONDITIONS(VECT2_SIZE >= 8)
   CHECK_CONDITIONS(VECT3_SIZE >= 8)
-  if (VECT2_SIZE > VECT3_SIZE)
+  if (VECT2_SIZE > VECT3_SIZE) {
     CHECK_CONDITIONS(VECT1_SIZE >= (VECT2_SIZE + 2*VECT3_SIZE - 2))
-  else
+  }
+  else {
     CHECK_CONDITIONS(VECT1_SIZE >= (VECT3_SIZE + 2*VECT2_SIZE - 2))
+  }
 
   // Action
   dsp16_debug_printf("vect1 = conv(vect2, vect3)\n");

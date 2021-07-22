@@ -21,7 +21,19 @@
 			<require idref="sam0.utils" />
 			<require idref="sam0.drivers.system" />
 
-			<device-support value="sam0" />
+			<device-support value="samd20"/>
+			<device-support value="samd21"/>
+			<device-support value="samr21"/>
+			<device-support value="samd10"/>
+			<device-support value="samd11"/>
+			<device-support value="samda1"/>
+			<device-support value="samha1"/>
+			<device-support value="samha0"/>
+			<device-support value="saml21"/>
+			<device-support value="samr30"/>
+			<device-support value="saml22"/>
+			<device-support value="samc20"/>
+			<device-support value="samc21"/>
 		</module>
 
 		<module caption="AC - Analog Comparator (Callback APIs)" id="sam0.drivers.ac#callback" type="driver">
@@ -43,7 +55,19 @@
 			<require idref="sam0.utils" />
 			<require idref="sam0.drivers.system" />
 
-			<device-support value="sam0" />
+			<device-support value="samd20"/>
+			<device-support value="samd21"/>
+			<device-support value="samr21"/>
+			<device-support value="samd10"/>
+			<device-support value="samd11"/>
+			<device-support value="samda1"/>
+			<device-support value="samha1"/>
+			<device-support value="samha0"/>
+			<device-support value="saml21"/>
+			<device-support value="samr30"/>
+			<device-support value="saml22"/>
+			<device-support value="samc20"/>
+			<device-support value="samc21"/>
 		</module>
 	</select-by-config>
 
