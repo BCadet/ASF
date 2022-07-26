@@ -1,0 +1,1 @@
+add_subdirectory(power_sam_c)

@@ -1,0 +1,26 @@
+set(SRCS
+
+)
+
+set(HDRS
+${CMAKE_CURRENT_LIST_DIR}/samc21.h
+${CMAKE_CURRENT_LIST_DIR}/samc21e15a.h
+${CMAKE_CURRENT_LIST_DIR}/samc21e16a.h
+${CMAKE_CURRENT_LIST_DIR}/samc21e17a.h
+${CMAKE_CURRENT_LIST_DIR}/samc21e18a.h
+${CMAKE_CURRENT_LIST_DIR}/samc21g15a.h
+${CMAKE_CURRENT_LIST_DIR}/samc21g16a.h
+${CMAKE_CURRENT_LIST_DIR}/samc21g17a.h
+${CMAKE_CURRENT_LIST_DIR}/samc21g18a.h
+${CMAKE_CURRENT_LIST_DIR}/samc21j15a.h
+${CMAKE_CURRENT_LIST_DIR}/samc21j16a.h
+${CMAKE_CURRENT_LIST_DIR}/samc21j17a.h
+${CMAKE_CURRENT_LIST_DIR}/samc21j18a.h
+)
+
+target_include_directories(ASF PUBLIC ${CMAKE_CURRENT_LIST_DIR})
+# target_sources(ASF ${SRCS})
+
+add_subdirectory(component)
+add_subdirectory(instance)
+add_subdirectory(pio)

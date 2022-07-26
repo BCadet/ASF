@@ -1,0 +1,2 @@
+add_subdirectory(boards)
+add_subdirectory(services)
