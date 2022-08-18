@@ -6,6 +6,10 @@
 
 # project (ASF)
 
+option(ASF_STDIO "enable stdio stubs in ASF" ON)
+option(ASF_SYSCALLS "enable syscalls definitions in ASF" ON)
+option(ASF_EXTERNAL_STARTUP "use external startup file" OFF)
+
 add_library(ASF)
 
 target_include_directories(ASF PUBLIC 
