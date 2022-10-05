@@ -22,32 +22,15 @@ add_subdirectory(common2)
 add_subdirectory(sam0)
 add_subdirectory(thirdparty)
 
-# install(
-#   EXPORT ASFTargets
-#   DESTINATION ${CMAKE_BINARY_DIR}/cmake/ASF
-#   NAMESPACE ASF::
-#   FILE ASFTargets.cmake # Not sure if this is still needed
-#   )
-
-# include(CMakePackageConfigHelpers)
-# configure_package_config_file( 
-#   "Config.cmake.in" 
-#   "ASFConfig.cmake"
-#   INSTALL_DESTINATION ${CMAKE_BINARY_DIR}/cmake/ASF
-#   PATH_VARS
-#     CMAKE_BINARY_DIR
-#   )
-
-# write_basic_package_version_file(
-#   ${CMAKE_CURRENT_BINARY_DIR}/ASFConfigVersion.cmake
-#   VERSION 1.0.0
-#   COMPATIBILITY SameMajorVersion
-#   )
-
-# ### Install Config and ConfigVersion files
-# install(
-#   FILES "${CMAKE_CURRENT_BINARY_DIR}/ASFConfig.cmake"
-#         "${CMAKE_CURRENT_BINARY_DIR}/ASFConfigVersion.cmake"
-#   DESTINATION "${CMAKE_BINARY_DIR}/cmake/ASF"
-#   )
-
+option(ASF_DOCUMENTATION "Build the asf documentation with Doxygen" OFF)
+if(ASF_DOCUMENTATION)
+    message(STATUS "[ASF] Documentation build enabled: asf-doc")
+    get_target_property(ASF_SOURCES ASF SOURCES)
+    get_target_property(ASF_HEADERS ASF INCLUDE_DIRECTORIES)
+    find_package(Doxygen REQUIRED dot)
+    set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/documentation/asf")
+    set(DOXYGEN_PROJECT_NAME "ASF")
+    set(DOXYGEN_GENERATE_TAGFILE "${CMAKE_BINARY_DIR}/documentation/asf.tag")
+    set(DOXYGEN_GENERATE_TREEVIEW "YES")
+    doxygen_add_docs(asf-doc "${ASF_SOURCES};${ASF_HEADERS}")
+endif()
